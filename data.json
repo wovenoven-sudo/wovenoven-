@@ -1,0 +1,198 @@
+{
+  "settings": {
+    "brandName": "wovenoven",
+    "logoText": "wovenoven.kr",
+    "tagline": "불필요한 봉제선 없이,\n살림에 필요한 것만 만들어요",
+    "naverStoreUrl": "https://smartstore.naver.com/wovenoven",
+    "instagramUrl": "https://instagram.com/wovenoven.kr",
+    "gridColsDesktop": 3,
+    "gridColsMobile": 2
+  },
+  "footer": {
+    "visible": false,
+    "company": "우븐오븐",
+    "ceo": "엄소영",
+    "phone": "010-3059-2348",
+    "email": "wovenoven@gmail.com",
+    "address": "경기도 안산시 오복로4길 8, 2층",
+    "businessNumber": "661-19-02348"
+  },
+  "products": [
+    {
+      "id": 1782968502844,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194348",
+      "name": "소리 코스터",
+      "englishName": "Sori Coaster",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502843,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13635871544",
+      "name": "소리 미니 코스터",
+      "englishName": "Sori Mini Coaster",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502835,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13633777672",
+      "name": "빅파우치 도트",
+      "englishName": "Big Pouch (dot)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502849,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13628162172",
+      "name": "쿠루무 보자기 화이트",
+      "englishName": "Kurumu Bozagi (white)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502847,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13621686773",
+      "name": "쿠루무 보자기 마젠타",
+      "englishName": "Kurumu Bozagi (magenta)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502848,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13628161226",
+      "name": "쿠루무 보자기 피치",
+      "englishName": "Kurumu Bozagi (peach)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502854,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13635247963",
+      "name": "하트 무드등",
+      "englishName": "Heart Light",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502841,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13634074342",
+      "name": "한라산 파우치",
+      "englishName": "Halla Mountain Pouch",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502842,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13634066577",
+      "name": "후지산 파우치",
+      "englishName": "Fuji Mountain Pouch",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502855,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13635247963",
+      "name": "하트 수유등",
+      "englishName": "Heart Light for mother",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502837,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13628554959",
+      "name": "누노 테이블매트 오프화이트",
+      "englishName": "Nuno Table Mat (off white)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502838,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13628288279",
+      "name": "도자기 접시",
+      "englishName": "Ceramic Plate (vintage blue)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502851,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194351",
+      "name": "포리 커튼",
+      "englishName": "Fori Curtain",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502846,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13637751658",
+      "name": "주문제작 커튼",
+      "englishName": "Custom Curtain",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502850,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194349",
+      "name": "선물 세트",
+      "englishName": "Gift SET",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502839,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13622439083",
+      "name": "레이스 커튼",
+      "englishName": "Race Curtain",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502840,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194350",
+      "name": "료리 허리앞치마",
+      "englishName": "Ryori Half Apron (off white)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502845,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488179250",
+      "name": "체크 커튼",
+      "englishName": "Check Curtain",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502836,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488179249",
+      "name": "누노 테이블매트 옐로우체크",
+      "englishName": "Nuno Table Mat (yellow check)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502852,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13627357405",
+      "name": "피크닉 파우치 그리드",
+      "englishName": "Picnic Pouch (grid)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502853,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488179247",
+      "name": "피크닉 파우치 블루체크",
+      "englishName": "Picnic Pouch (blue check)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502856,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13554113374",
+      "name": "하트 스폰지",
+      "englishName": "Heart Sponge",
+      "description": "",
+      "customOrder": false
+    }
+  ]
+}

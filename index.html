@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wovenoven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== CURTAIN INTRO ========== -->
+  <div class="curtain-overlay" id="curtainOverlay">
+    <div class="c-side c-left">
+      <div class="c-body"></div>
+      <div class="c-fold-shd"></div>
+    </div>
+    <div class="c-side c-right">
+      <div class="c-body"></div>
+    </div>
+    <div class="c-info">
+      <p class="c-info-tagline" id="cTagline"></p>
+      <p class="c-info-brand" id="cBrand"></p>
+    </div>
+    <p class="curtain-hint">click</p>
+  </div>
+
+  <!-- ========== SIDEBAR (데스크탑) ========== -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <p class="tagline" id="sTagline"></p>
+      <a href="/" class="logo" id="sLogoText"></a>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#products">product</a>
+      <a href="#" target="_blank" rel="noopener" id="sNavNaver">naver store</a>
+      <a href="#" target="_blank" rel="noopener" id="sNavInsta">Instagram</a>
+    </nav>
+  </aside>
+
+  <!-- ========== HEADER (모바일) ========== -->
+  <header class="mobile-header">
+    <a href="/" class="logo" id="mBrandName"></a>
+    <button class="ham-btn" id="hamBtn" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="#products">product</a>
+    <a href="#" target="_blank" rel="noopener" id="mNavNaver">naver store</a>
+    <a href="#" target="_blank" rel="noopener" id="mNavInsta">Instagram</a>
+  </nav>
+
+  <!-- ========== MAIN ========== -->
+  <main class="main" id="products">
+    <div class="mobile-tagline" id="mTagline"></div>
+    <div class="grid" id="productGrid"></div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script>
+    // ═══════════════════════════════════════════════
+    //  커튼 인트로 효과
+    // ═══════════════════════════════════════════════
+    (function () {
+      const curtain = document.getElementById('curtainOverlay');
+      if (!curtain) return;
+      curtain.addEventListener('click', function () {
+        this.classList.add('open');
+        setTimeout(() => this.classList.add('gone'), 1050);
+      });
+    })();
+
+    // ═══════════════════════════════════════════════
+    //  데이터 로드 (어드민에서 저장한 데이터 우선)
+    // ═══════════════════════════════════════════════
+    const STORAGE_KEY = 'wovenoven_data';
+
+    const DEFAULTS = {
+      settings: {
+        brandName:     'wovenoven',
+        logoText:      'wovenoven.kr',
+        tagline:       '안녕하세요, 우브노브 입니다\n불필요한 봉제선 없이,\n살림에 필요한 것만 만들어요 🧵',
+        naverStoreUrl: 'https://smartstore.naver.com/',
+        instagramUrl:  'https://instagram.com/',
+      },
+      footer: {
+        visible: true,
+        company: 'wovenoven', ceo: 'Soyoung Um',
+        phone: '+82-10-3059-2348', email: 'wovenoven@gmail.com',
+        address: '2F, 8, Bono-ro 4-gil, Ansan-si, Gyeonggi-do', businessNumber: '661-19-02348',
+      },
+      products: [
+        { id: 1, name: '포리 커튼',    englishName: 'Fori Curtain',   description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: true  },
+        { id: 2, name: '소리 코스터',  englishName: 'Sori Coaster',   description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: false },
+        { id: 3, name: '하트 스폰지',  englishName: 'Heart Sponge',   description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: false },
+        { id: 4, name: '노리 쿠션',    englishName: 'Nori Cushion',   description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: true  },
+        { id: 5, name: '모리 러그',    englishName: 'Mori Rug',       description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: false },
+        { id: 6, name: '타리 냄비받침', englishName: 'Tari Trivet',   description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: false },
+      ],
+    };
+
+    let siteData = JSON.parse(JSON.stringify(DEFAULTS));
+
+    async function init() {
+      // 우선순위: localStorage(어드민 로컬) → data.json(배포 서버) → DEFAULTS
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) { siteData = JSON.parse(stored); }
+        else {
+          const res = await fetch('./data.json');
+          if (res.ok) siteData = await res.json();
+        }
+      } catch (e) {}
+      applySettings();
+      renderProducts();
+      renderFooter();
+      initMobileMenu();
+    }
+    init();
+
+    // ═══════════════════════════════════════════════
+    //  사이트 정보 반영
+    // ═══════════════════════════════════════════════
+    function applySettings() {
+      const s = siteData.settings;
+      document.title = s.brandName || 'wovenoven';
+
+      const taglineEl = document.getElementById('sTagline');
+      taglineEl.style.whiteSpace = 'pre-line';
+      taglineEl.textContent = s.tagline || '';
+
+      document.getElementById('sLogoText').textContent  = s.logoText  || s.brandName;
+      document.getElementById('mBrandName').textContent = s.brandName || 'wovenoven';
+      document.getElementById('sNavNaver').href  = s.naverStoreUrl || '#';
+      document.getElementById('sNavInsta').href  = s.instagramUrl  || '#';
+      document.getElementById('mNavNaver').href  = s.naverStoreUrl || '#';
+      document.getElementById('mNavInsta').href  = s.instagramUrl  || '#';
+
+      document.getElementById('mTagline').textContent = s.tagline || '';
+
+      const cTagline = document.getElementById('cTagline');
+      const cBrand   = document.getElementById('cBrand');
+      if (cTagline) cTagline.textContent = s.tagline   || '';
+      if (cBrand)   cBrand.textContent   = s.logoText  || s.brandName || '';
+
+      // 열 수 설정 적용
+      const dc = s.gridColsDesktop || 3;
+      const mc = s.gridColsMobile  || 2;
+      document.documentElement.style.setProperty('--grid-cols-desktop', dc);
+      document.documentElement.style.setProperty('--grid-cols-mobile',  mc);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  상품 그리드 렌더링
+    // ═══════════════════════════════════════════════
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+
+      siteData.products.forEach(p => {
+        const card = document.createElement('a');
+        card.href   = p.naverUrl || '#';
+        card.target = '_blank';
+        card.rel    = 'noopener noreferrer';
+        card.className = 'card';
+        card.setAttribute('aria-label', p.name + ' — 네이버 스토어로 이동');
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'card-img-wrap';
+
+        const img = document.createElement('img');
+        img.alt = p.name;
+        img.loading = 'lazy';
+        img.dataset.name = p.englishName || '';
+        img.dataset.extIdx = '0';
+        img.src = `images/${p.englishName || '__none__'}.jpg`;
+        img.onerror = function() { tryNextProductImg(this); };
+
+        const overlay = document.createElement('div');
+        overlay.className = 'card-overlay';
+        overlay.innerHTML = `
+          <span class="overlay-name">${p.name}</span>
+          ${p.customOrder ? '<span class="badge">주문제작</span>' : ''}
+        `;
+
+        imgWrap.appendChild(img);
+        imgWrap.appendChild(overlay);
+
+        const info = document.createElement('div');
+        info.className = 'card-info';
+        info.innerHTML = `
+          <p class="card-name">${p.name}</p>
+          ${p.description ? `<p class="card-size">${p.description}</p>` : ''}
+        `;
+
+        card.appendChild(imgWrap);
+        card.appendChild(info);
+        grid.appendChild(card);
+      });
+    }
+
+    function tryNextProductImg(img) {
+      const exts = ['png', 'webp', 'jpeg', 'gif'];
+      const idx = parseInt(img.dataset.extIdx || '0');
+      if (img.dataset.name && idx < exts.length) {
+        img.dataset.extIdx = idx + 1;
+        img.src = `images/${img.dataset.name}.${exts[idx]}`;
+      } else {
+        img.style.display = 'none';
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    //  푸터 렌더링
+    // ═══════════════════════════════════════════════
+    function renderFooter() {
+      const f = siteData.footer;
+      const s = siteData.settings;
+      const footer = document.getElementById('siteFooter');
+
+      if (f.visible === false) {
+        footer.style.display = 'none';
+        return;
+      }
+
+      footer.style.display = '';
+      footer.innerHTML = `
+        <p>company &nbsp;${f.company}</p>
+        <p>Owner: &nbsp;${f.ceo}</p>
+        <p>Business Registration No.: &nbsp;${f.businessNumber}</p>
+        <p>Tel: &nbsp;${f.phone}</p>
+        <p>Mail: &nbsp;${f.email}</p>
+        <p>Address: &nbsp;${f.address}</p>
+        <p class="copyright">© 2025 ${s.brandName}. All rights reserved.</p>
+      `;
+    }
+
+    // ═══════════════════════════════════════════════
+    //  모바일 햄버거 메뉴
+    // ═══════════════════════════════════════════════
+    function initMobileMenu() {
+      const hamBtn   = document.getElementById('hamBtn');
+      const mobileNav = document.getElementById('mobileNav');
+
+      hamBtn.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.toggle('open');
+        hamBtn.classList.toggle('active', isOpen);
+        hamBtn.setAttribute('aria-label', isOpen ? '메뉴 닫기' : '메뉴 열기');
+      });
+
+      mobileNav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          mobileNav.classList.remove('open');
+          hamBtn.classList.remove('active');
+          hamBtn.setAttribute('aria-label', '메뉴 열기');
+        });
+      });
+    }
+  </script>
+</body>
+</html>

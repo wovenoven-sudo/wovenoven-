@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 — wovenoven</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    :root {
+      --font: 'Inter', 'Noto Sans KR', sans-serif;
+      --text: #1a1a1a;
+      --muted: #888;
+      --border: #e5e5e5;
+      --bg: #f7f7f7;
+      --white: #fff;
+      --accent: #6b5ce7;
+      --accent-light: #f0eeff;
+      --danger: #ef4444;
+      --header-h: 56px;
+      --sidebar-w: 200px;
+    }
+
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    .admin-header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 100;
+    }
+    .admin-header-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .admin-header-title .sub { font-size: 12px; color: var(--muted); font-weight: 400; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* ── 파일 연결 배너 ── */
+    .file-banner {
+      position: fixed; top: var(--header-h); left: 0; right: 0;
+      background: #fffbeb; border-bottom: 1px solid #fde68a;
+      padding: 10px 24px; display: flex; align-items: center; gap: 12px;
+      font-size: 12px; color: #92400e; z-index: 90;
+    }
+    .file-banner.hidden { display: none; }
+    .file-banner-text { flex: 1; }
+    .file-banner-text strong { font-weight: 600; }
+
+    /* 파일 연결 시 레이아웃 밀기 */
+    .layout.has-banner { padding-top: calc(var(--header-h) + 41px); }
+    .layout { padding-top: var(--header-h); min-height: 100vh; }
+
+    /* ── 파일 상태 표시 ── */
+    .file-status {
+      font-size: 11px; padding: 4px 10px; border-radius: 20px;
+      display: flex; align-items: center; gap: 5px; font-weight: 500;
+    }
+    .file-status.connected { background: #dcfce7; color: #166534; }
+    .file-status.disconnected { background: #fee2e2; color: #991b1b; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 6px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      border: none; font-family: var(--font); transition: all .15s;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #5a4dd0; }
+    .btn-ghost { background: none; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* ── Layout ── */
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .admin-sidebar {
+      width: var(--sidebar-w); position: fixed;
+      top: var(--header-h); left: 0; bottom: 0;
+      background: var(--white); border-right: 1px solid var(--border);
+      padding: 16px 0; z-index: 90;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px; font-size: 13px; cursor: pointer;
+      color: var(--muted); transition: all .15s;
+      border-left: 3px solid transparent; user-select: none;
+    }
+    .nav-item:hover { color: var(--text); background: var(--bg); }
+    .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-light); font-weight: 500; }
+
+    /* ── Main content ── */
+    .admin-main { margin-left: var(--sidebar-w); flex: 1; padding: 36px 40px 80px; max-width: 760px; }
+
+    /* ── Sections ── */
+    .section { display: none; }
+    .section.active { display: block; }
+    .section-title { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
+
+    /* ── Cards ── */
+    .form-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px; margin-bottom: 20px;
+    }
+    .form-card-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 16px; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 18px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { display: block; font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+    .form-input, .form-textarea {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 13px; font-family: var(--font); color: var(--text);
+      background: var(--white); transition: border-color .15s;
+    }
+    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 76px; line-height: 1.7; }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ── Product list ── */
+    .product-list {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; margin-bottom: 12px;
+    }
+    .product-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      transition: background .1s;
+    }
+    .product-row:last-child { border-bottom: none; }
+    .product-row:hover { background: #fafafa; }
+    .product-thumb {
+      width: 50px; height: 50px; border-radius: 6px; flex-shrink: 0;
+      object-fit: cover; border: 1px solid var(--border); background: var(--bg);
+    }
+    .product-thumb-empty {
+      width: 50px; height: 50px; border-radius: 6px; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .product-info { flex: 1; min-width: 0; }
+    .product-info-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-info-size { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .product-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .badge-co { display: inline-block; font-size: 10px; background: var(--accent-light); color: var(--accent); padding: 1px 7px; border-radius: 20px; margin-left: 5px; }
+    .empty-state { padding: 48px 24px; text-align: center; color: var(--muted); font-size: 13px; line-height: 2; }
+
+    /* ── Product edit panel ── */
+    .product-form-panel {
+      display: none; background: var(--white);
+      border: 2px solid var(--accent); border-radius: 10px;
+      padding: 24px; margin-bottom: 12px;
+    }
+    .product-form-panel.open { display: block; }
+    .product-form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .product-form-header h3 { font-size: 15px; font-weight: 600; }
+
+    /* ── Image upload ── */
+    .img-upload-wrap { display: flex; align-items: flex-start; gap: 16px; }
+    .img-preview {
+      width: 88px; height: 88px; border-radius: 8px; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; overflow: hidden;
+    }
+    .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .img-upload-info { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+    .img-upload-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border: 1px dashed var(--border); border-radius: 6px;
+      font-size: 12px; cursor: pointer; background: var(--bg); color: var(--muted);
+      transition: all .15s; font-family: var(--font);
+    }
+    .img-upload-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+    input[type="file"] { display: none; }
+
+    /* ── Checkbox ── */
+    .check-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .check-wrap input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+    .check-label { font-size: 13px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #1a1a1a; color: white;
+      padding: 10px 18px; border-radius: 8px; font-size: 13px;
+      opacity: 0; transform: translateY(8px);
+      transition: all .25s; z-index: 999; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ── Excel hint ── */
+    .excel-hint {
+      background: var(--accent-light); border: 1px solid #d4cef7;
+      border-radius: 8px; padding: 12px 16px;
+      font-size: 12px; color: #5a4dd0; line-height: 1.7; margin-bottom: 14px;
+    }
+
+    /* ── Grid settings bar ── */
+    .grid-settings-bar {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      padding: 10px 14px; background: #fafafa;
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px;
+    }
+    .grid-setting-group { display: flex; align-items: center; gap: 8px; }
+    .grid-setting-label { font-size: 12px; font-weight: 500; white-space: nowrap; }
+    .col-btns { display: flex; gap: 4px; }
+    .col-btn {
+      padding: 3px 11px; border: 1px solid var(--border); border-radius: 4px;
+      background: var(--white); font-size: 11px; font-family: var(--font);
+      cursor: pointer; color: var(--muted); transition: all .15s;
+    }
+    .col-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .col-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+    /* ── Admin product grid ── */
+    .admin-grid-wrap {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px; background: #fafafa; min-height: 140px; margin-bottom: 12px;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .admin-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 8px; overflow: hidden;
+      cursor: grab; position: relative; transition: box-shadow .2s, opacity .2s;
+      user-select: none;
+    }
+    .admin-card:active { cursor: grabbing; }
+    .admin-card.dragging { opacity: .35; box-shadow: none; }
+    .admin-card.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(107,92,231,.25); }
+    .admin-card-img-wrap {
+      position: relative; width: 100%; aspect-ratio: 1/1;
+      background: #efefef; overflow: hidden;
+    }
+    .admin-card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .admin-card-img-empty {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      color: #ccc; font-size: 32px;
+    }
+    .admin-card-actions {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.45);
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      opacity: 0; transition: opacity .2s;
+    }
+    .admin-card:hover .admin-card-actions { opacity: 1; }
+    .admin-card-actions button {
+      padding: 5px 13px; border-radius: 5px; border: none;
+      font-size: 11px; cursor: pointer; font-family: var(--font); font-weight: 500;
+    }
+    .btn-edit-card { background: #fff; color: var(--text); }
+    .btn-del-card  { background: #e74c3c; color: #fff; }
+    .admin-card-drag-handle {
+      position: absolute; top: 5px; right: 5px;
+      background: rgba(0,0,0,.28); color: #fff;
+      border-radius: 4px; padding: 2px 5px; font-size: 13px;
+      opacity: 0; transition: opacity .2s; line-height: 1; cursor: grab;
+    }
+    .admin-card:hover .admin-card-drag-handle { opacity: 1; }
+    .admin-card-info { padding: 8px 10px 10px; }
+    .admin-card-name { font-size: 12px; font-weight: 400; line-height: 1.4; }
+    .admin-card-sub  { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .admin-card-badge {
+      display: inline-block; font-size: 9px; background: var(--accent); color: #fff;
+      padding: 1px 7px; border-radius: 10px; margin-top: 4px;
+    }
+    /* ── Card edit modal ── */
+    .card-edit-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.35); z-index: 400;
+    }
+    .card-edit-overlay.show { display: block; }
+    .card-edit-modal {
+      display: none; position: fixed;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      background: var(--white); border-radius: 12px; padding: 24px;
+      width: 440px; max-width: 92vw; z-index: 401;
+      box-shadow: 0 20px 60px rgba(0,0,0,.15);
+    }
+    .card-edit-modal.show { display: block; }
+    .card-edit-modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .table-footer { display: flex; gap: 8px; margin-top: 4px; align-items: center; }
+
+    /* ── Paste Modal ── */
+    .paste-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.35); z-index: 300;
+    }
+    .paste-overlay.show { display: block; }
+    .paste-modal {
+      display: none; position: fixed;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      background: var(--white); border-radius: 12px; padding: 24px;
+      width: 700px; max-width: 95vw; z-index: 301;
+      box-shadow: 0 20px 60px rgba(0,0,0,.15);
+    }
+    .paste-modal.show { display: block; }
+    .paste-modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .paste-col-guide {
+      display: flex; gap: 0; margin-bottom: 0;
+      border: 1px solid #c6c6c6; border-bottom: none; border-radius: 4px 4px 0 0; overflow: hidden;
+    }
+    .paste-col-guide span {
+      flex: 1; padding: 4px 8px; background: #217346; color: #fff;
+      font-size: 11px; font-weight: 500; border-right: 1px solid #1a5c38; white-space: nowrap;
+    }
+    .paste-col-guide span:last-child { border-right: none; }
+    .paste-textarea {
+      width: 100%; border: 1px solid #c6c6c6; border-radius: 0 0 4px 4px;
+      padding: 10px 12px; font-family: monospace; font-size: 11px;
+      resize: vertical; min-height: 90px; display: block;
+    }
+    .paste-textarea:focus { outline: none; border-color: var(--accent); }
+    .paste-multi-hint { font-size: 11px; color: var(--muted); margin-top: 8px; }
+    .paste-mode-btns {
+      display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; align-items: center;
+    }
+    .paste-btn-add { color: var(--accent) !important; border-color: var(--accent) !important; }
+    /* 미리보기 테이블 */
+    .paste-preview-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .paste-preview-count {
+      font-size: 12px; color: var(--white); background: var(--accent);
+      padding: 2px 10px; border-radius: 20px;
+    }
+    .paste-preview-wrap {
+      overflow: auto; max-height: 280px;
+      border: 1px solid #c6c6c6; border-radius: 3px;
+    }
+    .paste-preview-table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+    .paste-preview-table th {
+      background: #217346; color: #fff; padding: 5px 10px;
+      border: 1px solid #1a5c38; font-weight: 500; text-align: left; position: sticky; top: 0;
+    }
+    .paste-preview-table td {
+      padding: 4px 10px; border: 1px solid #d4d4d4;
+      max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+    }
+    .paste-preview-table tbody tr:nth-child(odd) td { background: #fff; }
+    .paste-preview-table tbody tr:nth-child(even) td { background: #f2f2f2; }
+    .paste-preview-table tbody tr:hover td { background: #dce9ff; }
+    .paste-preview-table td.url-cell { color: #1155cc; }
+  </style>
+</head>
+<body>
+
+<!-- ════ HEADER ════ -->
+<header class="admin-header">
+  <div class="admin-header-title">
+    wovenoven 관리자
+    <span class="sub">| 사이트 편집</span>
+  </div>
+  <div class="header-actions">
+    <span class="file-status disconnected" id="fileStatus">● 파일 미연결</span>
+    <button class="btn btn-ghost btn-sm" onclick="importData()">📥 가져오기</button>
+    <a href="index.html" target="_blank" class="btn btn-ghost btn-sm">🔗 미리보기</a>
+    <button class="btn btn-ghost btn-sm" onclick="exportSiteData()" title="Netlify 업로드용 data.json 저장">🚀 사이트 내보내기</button>
+    <button class="btn btn-primary btn-sm" onclick="saveAll()">저장</button>
+  </div>
+</header>
+
+<!-- 파일 미연결 안내 배너 -->
+<div class="file-banner" id="fileBanner">
+  <div class="file-banner-text">
+    <strong>📂 projectw 파일을 연결해주세요</strong> — 연결하면 저장 버튼만 눌러도 파일이 자동으로 업데이트돼요.
+  </div>
+  <button class="btn btn-ghost btn-sm" onclick="openExistingFile()">기존 파일 열기</button>
+  <button class="btn btn-primary btn-sm" onclick="createNewFile()">새로 만들기</button>
+</div>
+
+<input type="file" id="importFileInput" accept="*" style="display:none" onchange="handleImport(event)" />
+
+<!-- ════ LAYOUT ════ -->
+<div class="layout has-banner" id="layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="nav-item active" data-tab="site" onclick="switchTab(this, 'site')">🏠&nbsp; 사이트 정보</div>
+    <div class="nav-item" data-tab="products" onclick="switchTab(this, 'products')">📦&nbsp; 상품 관리</div>
+    <div class="nav-item" data-tab="footer" onclick="switchTab(this, 'footer')">📋&nbsp; 푸터 정보</div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- ── Tab: 사이트 정보 ── -->
+    <section class="section active" id="tab-site">
+      <h1 class="section-title">사이트 정보</h1>
+
+      <div class="form-card">
+        <p class="form-card-title">브랜드</p>
+        <div class="form-group">
+          <label class="form-label">브랜드명 (탭 제목, 모바일 헤더)</label>
+          <input type="text" class="form-input" id="brandName" placeholder="wovenoven" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">사이드바 로고 텍스트</label>
+          <input type="text" class="form-input" id="logoText" placeholder="wovenoven.kr" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">소개 문구</label>
+          <textarea class="form-textarea" id="tagline" rows="3" placeholder="안녕하세요, 우브노브 입니다&#10;불필요한 봉제선 없이,&#10;살림에 필요한 것만 만들어요"></textarea>
+          <p class="form-hint">사이드바에 표시되는 짧은 브랜드 소개글이에요.</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <p class="form-card-title">메뉴 링크</p>
+        <div class="form-group">
+          <label class="form-label">네이버 스토어 링크</label>
+          <input type="url" class="form-input" id="naverStoreUrl" placeholder="https://smartstore.naver.com/..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">인스타그램 링크</label>
+          <input type="url" class="form-input" id="instagramUrl" placeholder="https://instagram.com/..." />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Tab: 상품 관리 ── -->
+    <section class="section" id="tab-products">
+      <h1 class="section-title">상품 관리</h1>
+
+      <div class="excel-hint">
+        <strong>📋 엑셀 붙여넣기</strong> — 엑셀에서 셀 복사(Ctrl+C) 후 이 화면에서 <strong>Ctrl+V</strong>하면 바로 적용돼요<br>
+        <span style="opacity:.8">열 순서: <strong>상품URL · 상품명 · 영문명 · 상품소개</strong> &nbsp;|&nbsp; 이미지는 영문명과 같은 파일명을 images 폴더에 넣으면 자동 연결</span>
+      </div>
+
+      <!-- 열 수 설정 -->
+      <div class="grid-settings-bar">
+        <div class="grid-setting-group">
+          <span class="grid-setting-label">💻 웹 열 수</span>
+          <div class="col-btns" id="desktopColBtns">
+            <button class="col-btn" data-val="2">2열</button>
+            <button class="col-btn active" data-val="3">3열</button>
+            <button class="col-btn" data-val="4">4열</button>
+            <button class="col-btn" data-val="5">5열</button>
+          </div>
+        </div>
+        <div class="grid-setting-group">
+          <span class="grid-setting-label">📱 모바일 열 수</span>
+          <div class="col-btns" id="mobileColBtns">
+            <button class="col-btn" data-val="1">1열</button>
+            <button class="col-btn active" data-val="2">2열</button>
+            <button class="col-btn" data-val="3">3열</button>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="saveGridSettings()" style="margin-left:auto;white-space:nowrap">열 설정 저장</button>
+      </div>
+
+      <!-- 미리보기 그리드 -->
+      <div class="admin-grid-wrap">
+        <div class="admin-grid" id="adminGrid"></div>
+      </div>
+
+      <div class="table-footer">
+        <button class="btn btn-ghost btn-sm" onclick="addProductCard()">＋ 상품 추가</button>
+        <button class="btn btn-ghost btn-sm" onclick="importFromExcel()">📋 엑셀 붙여넣기</button>
+        <button class="btn btn-ghost btn-sm" onclick="deleteAllProducts()" style="color:#e55;border-color:#e55">🗑 전체 삭제</button>
+        <button class="btn btn-primary btn-sm" onclick="saveProducts()" style="margin-left:auto">저장</button>
+      </div>
+    </section>
+
+    <!-- ── Tab: 푸터 정보 ── -->
+    <section class="section" id="tab-footer">
+      <h1 class="section-title">푸터 정보</h1>
+
+      <div class="form-card">
+        <p class="form-card-title">표시 여부</p>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="check-wrap">
+            <input type="checkbox" id="fVisible" checked />
+            <span class="check-label">사이트에 푸터 표시하기</span>
+          </label>
+          <p class="form-hint" style="margin-top:8px">체크 해제 시 사이트 하단에 푸터가 숨겨집니다.</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <p class="form-card-title">Business Information</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Company</label>
+            <input type="text" class="form-input" id="fCompany" placeholder="wovenoven" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Owner</label>
+            <input type="text" class="form-input" id="fCeo" placeholder="Soyoung Um" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tel</label>
+            <input type="text" class="form-input" id="fPhone" placeholder="+82-10-0000-0000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mail</label>
+            <input type="email" class="form-input" id="fEmail" placeholder="email@example.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <input type="text" class="form-input" id="fAddress" placeholder="2F, 8, Bono-ro 4-gil, Ansan-si, Gyeonggi-do" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business Registration No.</label>
+          <input type="text" class="form-input" id="fBizNum" placeholder="000-00-00000" />
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Card Edit Modal -->
+<div class="card-edit-overlay" id="cardEditOverlay" onclick="closeCardEdit()"></div>
+<div class="card-edit-modal" id="cardEditModal">
+  <h3 id="cardEditTitle">상품 수정</h3>
+  <div class="form-group">
+    <label class="form-label">상품명 (한국어)</label>
+    <input type="text" class="form-input" id="editName" placeholder="포리 커튼">
+  </div>
+  <div class="form-group">
+    <label class="form-label">영문명 <span style="font-weight:300;font-size:11px;color:var(--muted)">(이미지 파일명과 동일하게)</span></label>
+    <input type="text" class="form-input" id="editEnglishName" placeholder="Fori Curtain">
+  </div>
+  <div class="form-group">
+    <label class="form-label">상품URL (네이버 스토어)</label>
+    <input type="url" class="form-input" id="editNaverUrl" placeholder="https://smartstore.naver.com/...">
+  </div>
+  <div class="form-group">
+    <label class="form-label">상품소개 <span style="font-weight:300;font-size:11px;color:var(--muted)">(짧은 한 줄 설명)</span></label>
+    <input type="text" class="form-input" id="editDescription" placeholder="예: 사랑스럽고 실용적인 양면 스폰지">
+  </div>
+  <div class="form-group" style="display:flex;align-items:center;gap:8px;margin-bottom:0">
+    <input type="checkbox" id="editCustomOrder" style="accent-color:var(--accent);width:15px;height:15px">
+    <label for="editCustomOrder" class="form-label" style="margin:0;cursor:pointer">주문제작 상품</label>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
+    <button class="btn btn-ghost" onclick="closeCardEdit()">취소</button>
+    <button class="btn btn-primary" onclick="saveCardEdit()">저장</button>
+  </div>
+</div>
+
+<!-- Paste Modal -->
+<div class="paste-overlay" id="pasteOverlay" onclick="closePasteModal()"></div>
+<div class="paste-modal" id="pasteModal">
+
+  <!-- Step 1: 붙여넣기 영역 -->
+  <div id="pasteStep1">
+    <h3>📋 엑셀 붙여넣기</h3>
+    <p class="form-hint" style="margin-bottom:10px">엑셀에서 셀 선택 후 <strong>Ctrl+C</strong> → 아래 영역 클릭 → <strong>Ctrl+V</strong></p>
+    <div class="paste-col-guide">
+      <span>A&nbsp;상품URL</span><span>B&nbsp;상품명</span><span>C&nbsp;영문명</span><span>D&nbsp;상품소개</span>
+    </div>
+    <textarea id="pasteTextarea" class="paste-textarea" placeholder="여기를 클릭 후 Ctrl+V"></textarea>
+    <p class="paste-multi-hint">💡 여러 상품은 엑셀에서 여러 행을 선택해 복사하면 한번에 가져와요</p>
+    <div style="text-align:right; margin-top:8px">
+      <button class="btn btn-ghost" onclick="closePasteModal()">취소</button>
+    </div>
+  </div>
+
+  <!-- Step 2: 미리보기 -->
+  <div id="pasteStep2" style="display:none">
+    <div class="paste-preview-header">
+      <h3>📋 붙여넣기 미리보기</h3>
+      <span id="pastePreviewInfo" class="paste-preview-count"></span>
+    </div>
+    <div class="paste-preview-wrap">
+      <table class="paste-preview-table" id="pastePreviewTable"></table>
+    </div>
+    <div class="paste-mode-btns">
+      <button class="btn btn-ghost btn-sm" onclick="backToPasteStep1()">← 다시</button>
+      <button class="btn btn-ghost btn-sm" onclick="closePasteModal()">취소</button>
+      <button class="btn btn-ghost btn-sm paste-btn-add" onclick="applyPasteData('add')" title="기존 상품 유지하고 새 상품 추가">＋ 추가</button>
+      <button class="btn btn-primary btn-sm" onclick="applyPasteData('replace')" title="기존 상품 삭제 후 새 목록으로 교체">교체</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  기본 데이터
+// ═══════════════════════════════════════════════════
+const STORAGE_KEY = 'wovenoven_data';
+
+const DEFAULTS = {
+  settings: {
+    brandName: 'wovenoven',
+    logoText: 'wovenoven.kr',
+    tagline: '안녕하세요, 우브노브 입니다\n불필요한 봉제선 없이,\n살림에 필요한 것만 만들어요 🧵',
+    naverStoreUrl: 'https://smartstore.naver.com/',
+    instagramUrl: 'https://instagram.com/',
+  },
+  footer: {
+    visible: true,
+    company: 'wovenoven', ceo: 'Soyoung Um',
+    phone: '+82-10-3059-2348', email: 'wovenoven@gmail.com',
+    address: '2F, 8, Bono-ro 4-gil, Ansan-si, Gyeonggi-do', businessNumber: '661-19-02348',
+  },
+  products: [
+    { id: 1, name: '포리 커튼', englishName: 'Fori Curtain',    description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: true  },
+    { id: 2, name: '소리 코스터', englishName: 'Sori Coaster', description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: false },
+    { id: 3, name: '하트 스폰지', englishName: 'Heart Sponge', description: '', naverUrl: 'https://smartstore.naver.com/', customOrder: false },
+  ],
+};
+
+// ─── 데이터 로드 ───
+let appData = JSON.parse(JSON.stringify(DEFAULTS));
+try {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) appData = JSON.parse(stored);
+} catch (e) {}
+
+let editingId = null;
+let fileHandle = null; // 연결된 파일 핸들
+
+window.addEventListener('DOMContentLoaded', () => {
+  fillForms();
+  renderProductGrid();
+
+  // 열 수 버튼
+  document.getElementById('desktopColBtns').addEventListener('click', function(e) {
+    const btn = e.target.closest('.col-btn');
+    if (!btn) return;
+    const val = parseInt(btn.dataset.val);
+    if (!appData.settings) appData.settings = {};
+    appData.settings.gridColsDesktop = val;
+    document.getElementById('adminGrid').style.gridTemplateColumns = `repeat(${val}, 1fr)`;
+    this.querySelectorAll('.col-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.val) === val));
+  });
+  document.getElementById('mobileColBtns').addEventListener('click', function(e) {
+    const btn = e.target.closest('.col-btn');
+    if (!btn) return;
+    const val = parseInt(btn.dataset.val);
+    if (!appData.settings) appData.settings = {};
+    appData.settings.gridColsMobile = val;
+    this.querySelectorAll('.col-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.val) === val));
+  });
+
+  // 카드 수정 모달 — Enter 키로 저장
+  document.getElementById('cardEditModal').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveCardEdit(); }
+    if (e.key === 'Escape') closeCardEdit();
+  });
+
+  // 붙여넣기 모달 textarea
+  document.getElementById('pasteTextarea').addEventListener('paste', function() {
+    setTimeout(() => { if (this.value.trim()) handleModalPaste(this.value); }, 30);
+  });
+});
+
+// ═══════════════════════════════════════════════════
+//  파일 연결 (File System Access API)
+// ═══════════════════════════════════════════════════
+async function openExistingFile() {
+  if (!window.showOpenFilePicker) { showToast('이 브라우저는 지원 안 해요. Chrome/Edge를 써주세요.'); return; }
+  try {
+    const [handle] = await window.showOpenFilePicker({ excludeAcceptAllOption: false });
+    fileHandle = handle;
+    const file = await handle.getFile();
+    const text = await file.text();
+    try {
+      appData = JSON.parse(text);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      fillForms();
+      renderProductTable();
+    } catch { showToast('파일 형식이 맞지 않아요.'); return; }
+    setFileConnected(handle.name);
+    showToast('연결됐어요 ✓ 이제 저장 버튼만 누르면 돼요');
+  } catch (e) { if (e.name !== 'AbortError') showToast('파일을 열 수 없어요'); }
+}
+
+async function createNewFile() {
+  if (!window.showSaveFilePicker) { showToast('이 브라우저는 지원 안 해요. Chrome/Edge를 써주세요.'); return; }
+  try {
+    fileHandle = await window.showSaveFilePicker({ suggestedName: 'projectw' });
+    await writeToFile();
+    setFileConnected(fileHandle.name);
+    showToast('만들었어요 ✓ 이제 저장 버튼만 누르면 돼요');
+  } catch (e) { if (e.name !== 'AbortError') showToast('파일을 만들 수 없어요'); }
+}
+
+async function writeToFile() {
+  if (!fileHandle) return;
+  try {
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify(appData, null, 2));
+    await writable.close();
+  } catch { showToast('파일 쓰기 실패. 파일을 다시 연결해주세요.'); fileHandle = null; updateFileStatus(); }
+}
+
+function setFileConnected(name) {
+  document.getElementById('fileStatus').textContent = '● ' + name;
+  document.getElementById('fileStatus').className = 'file-status connected';
+  document.getElementById('fileBanner').classList.add('hidden');
+  document.getElementById('layout').classList.remove('has-banner');
+}
+
+function updateFileStatus() {
+  if (!fileHandle) {
+    document.getElementById('fileStatus').textContent = '● 파일 미연결';
+    document.getElementById('fileStatus').className = 'file-status disconnected';
+    document.getElementById('fileBanner').classList.remove('hidden');
+    document.getElementById('layout').classList.add('has-banner');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  탭 전환
+// ═══════════════════════════════════════════════════
+function switchTab(el, tab) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+//  폼 값 채우기
+// ═══════════════════════════════════════════════════
+function fillForms() {
+  const s = appData.settings;
+  document.getElementById('brandName').value    = s.brandName    || '';
+  document.getElementById('logoText').value     = s.logoText     || '';
+  document.getElementById('tagline').value      = s.tagline      || '';
+  document.getElementById('naverStoreUrl').value= s.naverStoreUrl|| '';
+  document.getElementById('instagramUrl').value = s.instagramUrl || '';
+
+  const f = appData.footer;
+  document.getElementById('fVisible').checked = f.visible !== false;
+  document.getElementById('fCompany').value = f.company        || '';
+  document.getElementById('fCeo').value     = f.ceo            || '';
+  document.getElementById('fPhone').value   = f.phone          || '';
+  document.getElementById('fEmail').value   = f.email          || '';
+  document.getElementById('fAddress').value = f.address        || '';
+  document.getElementById('fBizNum').value  = f.businessNumber || '';
+}
+
+// ═══════════════════════════════════════════════════
+//  전체 저장
+// ═══════════════════════════════════════════════════
+async function saveAll() {
+  appData.settings = {
+    brandName:     document.getElementById('brandName').value.trim(),
+    logoText:      document.getElementById('logoText').value.trim(),
+    tagline:       document.getElementById('tagline').value,
+    naverStoreUrl: document.getElementById('naverStoreUrl').value.trim(),
+    instagramUrl:  document.getElementById('instagramUrl').value.trim(),
+    gridColsDesktop: appData.settings?.gridColsDesktop || 3,
+    gridColsMobile:  appData.settings?.gridColsMobile  || 2,
+  };
+  appData.footer = {
+    visible:        document.getElementById('fVisible').checked,
+    company:        document.getElementById('fCompany').value.trim(),
+    ceo:            document.getElementById('fCeo').value.trim(),
+    phone:          document.getElementById('fPhone').value.trim(),
+    email:          document.getElementById('fEmail').value.trim(),
+    address:        document.getElementById('fAddress').value.trim(),
+    businessNumber: document.getElementById('fBizNum').value.trim(),
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+
+  if (fileHandle) {
+    await writeToFile();
+    showToast('저장됐어요 ✓  (파일 자동 업데이트)');
+  } else {
+    showToast('저장됐어요 — 파일을 연결하면 자동 저장돼요');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  상품 그리드 렌더링 (미리보기)
+// ═══════════════════════════════════════════════════
+
+function renderProductGrid() {
+  const grid = document.getElementById('adminGrid');
+  const cols = appData.settings?.gridColsDesktop || 3;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+  grid.innerHTML = '';
+
+  if (!appData.products.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:48px 20px;text-align:center;color:var(--muted)">상품이 없어요.<br>＋ 상품 추가 또는 엑셀 붙여넣기로 추가하세요.</div>';
+    return;
+  }
+
+  appData.products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'admin-card';
+    card.draggable = true;
+    card.dataset.id = p.id;
+
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'admin-card-img-wrap';
+
+    if (p.englishName) {
+      const img = document.createElement('img');
+      img.dataset.name = p.englishName;
+      img.dataset.extIdx = '0';
+      img.src = `images/${p.englishName}.jpg`;
+      img.onerror = function() { tryNextImgExt(this); };
+      imgWrap.appendChild(img);
+    } else {
+      imgWrap.innerHTML = '<div class="admin-card-img-empty">🖼️</div>';
+    }
+
+    imgWrap.innerHTML += `
+      <div class="admin-card-actions">
+        <button class="btn-edit-card" onclick="event.stopPropagation();openCardEdit(${p.id})">수정</button>
+        <button class="btn-del-card"  onclick="event.stopPropagation();deleteProductRow(${p.id})">삭제</button>
+      </div>
+      <div class="admin-card-drag-handle">⠿</div>`;
+    card.appendChild(imgWrap);
+
+    card.innerHTML += `
+      <div class="admin-card-info">
+        <p class="admin-card-name">${p.name || '<span style="color:var(--muted)">(상품명 없음)</span>'}</p>
+        <p class="admin-card-sub">${p.englishName || ''}</p>
+        ${p.customOrder ? '<span class="admin-card-badge">주문제작</span>' : ''}
+      </div>`;
+
+    grid.appendChild(card);
+  });
+
+  setupDragDrop();
+  updateColBtns();
+}
+
+function tryNextImgExt(img) {
+  const exts = ['png', 'webp', 'jpeg', 'gif'];
+  const idx = parseInt(img.dataset.extIdx || '0');
+  if (img.dataset.name && idx < exts.length) {
+    img.dataset.extIdx = idx + 1;
+    img.src = `images/${img.dataset.name}.${exts[idx]}`;
+  } else {
+    img.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  드래그 앤 드롭
+// ═══════════════════════════════════════════════════
+let _dragSrcId = null;
+
+function setupDragDrop() {
+  const grid = document.getElementById('adminGrid');
+  // 기존 리스너 제거 후 재등록
+  const fresh = grid.cloneNode(false);
+  while (grid.firstChild) fresh.appendChild(grid.firstChild);
+  grid.parentNode.replaceChild(fresh, grid);
+
+  fresh.addEventListener('dragstart', function(e) {
+    const card = e.target.closest('.admin-card');
+    if (!card) return;
+    _dragSrcId = parseInt(card.dataset.id);
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => card.classList.add('dragging'), 0);
+  });
+  fresh.addEventListener('dragend', function() {
+    fresh.querySelectorAll('.admin-card').forEach(c => c.classList.remove('dragging', 'drag-over'));
+    _dragSrcId = null;
+  });
+  fresh.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    const card = e.target.closest('.admin-card');
+    if (!card || parseInt(card.dataset.id) === _dragSrcId) return;
+    fresh.querySelectorAll('.admin-card').forEach(c => c.classList.remove('drag-over'));
+    card.classList.add('drag-over');
+  });
+  fresh.addEventListener('drop', function(e) {
+    e.preventDefault();
+    const card = e.target.closest('.admin-card');
+    if (!card || !_dragSrcId) return;
+    const dropId = parseInt(card.dataset.id);
+    if (dropId === _dragSrcId) return;
+
+    const si = appData.products.findIndex(p => p.id === _dragSrcId);
+    const di = appData.products.findIndex(p => p.id === dropId);
+    if (si === -1 || di === -1) return;
+
+    const [moved] = appData.products.splice(si, 1);
+    appData.products.splice(di, 0, moved);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    if (fileHandle) writeToFile();
+    renderProductGrid();
+    showToast('순서가 변경됐어요 ✓');
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  카드 수정 모달
+// ═══════════════════════════════════════════════════
+let _editingCardId = null;
+
+function openCardEdit(id) {
+  _editingCardId = id;
+  const p = appData.products.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('cardEditTitle').textContent = p.name ? `"${p.name}" 수정` : '상품 추가';
+  document.getElementById('editName').value        = p.name        || '';
+  document.getElementById('editEnglishName').value = p.englishName || '';
+  document.getElementById('editNaverUrl').value    = p.naverUrl    || '';
+  document.getElementById('editDescription').value = p.description || '';
+  document.getElementById('editCustomOrder').checked = !!p.customOrder;
+  document.getElementById('cardEditModal').classList.add('show');
+  document.getElementById('cardEditOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('editName').focus(), 50);
+}
+
+function closeCardEdit() {
+  document.getElementById('cardEditModal').classList.remove('show');
+  document.getElementById('cardEditOverlay').classList.remove('show');
+  _editingCardId = null;
+}
+
+async function saveCardEdit() {
+  const idx = appData.products.findIndex(p => p.id === _editingCardId);
+  if (idx === -1) return;
+  appData.products[idx] = {
+    ...appData.products[idx],
+    name:        document.getElementById('editName').value.trim(),
+    englishName: document.getElementById('editEnglishName').value.trim(),
+    naverUrl:    document.getElementById('editNaverUrl').value.trim(),
+    description: document.getElementById('editDescription').value.trim(),
+    customOrder: document.getElementById('editCustomOrder').checked,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) await writeToFile();
+  renderProductGrid();
+  closeCardEdit();
+  showToast('수정됐어요 ✓');
+}
+
+// ═══════════════════════════════════════════════════
+//  상품 추가 / 삭제 / 저장
+// ═══════════════════════════════════════════════════
+function addProductCard() {
+  const newP = { id: Date.now(), name: '', englishName: '', naverUrl: '', description: '', customOrder: false };
+  appData.products.push(newP);
+  renderProductGrid();
+  openCardEdit(newP.id);
+}
+
+async function deleteAllProducts() {
+  if (!appData.products.length) { showToast('삭제할 상품이 없어요'); return; }
+  if (!confirm(`상품 ${appData.products.length}개를 모두 삭제할까요?\n이 작업은 되돌릴 수 없어요.`)) return;
+  appData.products = [];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) await writeToFile();
+  renderProductGrid();
+  showToast('전체 삭제됐어요');
+}
+
+async function deleteProductRow(id) {
+  const p = appData.products.find(x => x.id === id);
+  if (!confirm(`"${p?.name || '이 상품'}"을 삭제할까요?`)) return;
+  appData.products = appData.products.filter(x => x.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) await writeToFile();
+  renderProductGrid();
+  showToast('삭제됐어요');
+}
+
+async function saveProducts() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) await writeToFile();
+  showToast('저장됐어요 ✓');
+}
+
+// ═══════════════════════════════════════════════════
+//  열 수 설정
+// ═══════════════════════════════════════════════════
+function updateColBtns() {
+  const dc = appData.settings?.gridColsDesktop || 3;
+  const mc = appData.settings?.gridColsMobile  || 2;
+  document.querySelectorAll('#desktopColBtns .col-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.val) === dc));
+  document.querySelectorAll('#mobileColBtns .col-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.val) === mc));
+}
+
+async function saveGridSettings() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) await writeToFile();
+  showToast('열 설정이 저장됐어요 ✓');
+}
+
+// ═══════════════════════════════════════════════════
+//  엑셀 붙여넣기
+// ═══════════════════════════════════════════════════
+let _pendingPasteProducts = [];
+
+function importFromExcel() {
+  showPasteModal();
+}
+
+function showPasteModal() {
+  document.getElementById('pasteModal').classList.add('show');
+  document.getElementById('pasteOverlay').classList.add('show');
+  document.getElementById('pasteStep1').style.display = '';
+  document.getElementById('pasteStep2').style.display = 'none';
+  document.getElementById('pasteTextarea').value = '';
+  _pendingPasteProducts = [];
+  setTimeout(() => document.getElementById('pasteTextarea').focus(), 50);
+}
+
+function closePasteModal() {
+  document.getElementById('pasteModal').classList.remove('show');
+  document.getElementById('pasteOverlay').classList.remove('show');
+}
+
+function backToPasteStep1() {
+  document.getElementById('pasteStep1').style.display = '';
+  document.getElementById('pasteStep2').style.display = 'none';
+  document.getElementById('pasteTextarea').value = '';
+  _pendingPasteProducts = [];
+  setTimeout(() => document.getElementById('pasteTextarea').focus(), 50);
+}
+
+function handleModalPaste(text) {
+  const products = parseTSV(text);
+  if (!products.length) {
+    showToast('인식된 상품이 없어요. 열 순서(상품URL·상품명·영문명·상품소개)를 확인해 주세요');
+    return;
+  }
+  _pendingPasteProducts = products;
+
+  // 미리보기 테이블 렌더링
+  const tbl = document.getElementById('pastePreviewTable');
+  const cols = ['상품URL', '상품명', '영문명', '상품소개'];
+  let html = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+  products.forEach(p => {
+    const url = p.naverUrl ? `<a href="${p.naverUrl}" target="_blank" title="${p.naverUrl}">${p.naverUrl.replace('https://','')}</a>` : '—';
+    html += `<tr>
+      <td class="url-cell" style="max-width:240px">${url}</td>
+      <td>${p.name || '—'}</td>
+      <td>${p.englishName || '—'}</td>
+      <td>${p.description || '—'}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+
+  document.getElementById('pastePreviewInfo').textContent = `${products.length}개 상품`;
+  document.getElementById('pasteStep1').style.display = 'none';
+  document.getElementById('pasteStep2').style.display = '';
+}
+
+function applyPasteData(mode) {
+  const products = _pendingPasteProducts;
+  if (!products.length) { showToast('적용할 상품이 없어요'); return; }
+  closePasteModal();
+
+  if (mode === 'add') {
+    const newByUrl = new Map(products.filter(p => p.naverUrl).map(p => [p.naverUrl, p]));
+    const kept = appData.products.filter(p => !newByUrl.has(p.naverUrl));
+    appData.products = [...kept, ...products];
+    showToast(`${products.length}개 상품을 추가했어요 ✓`);
+  } else {
+    appData.products = products;
+    showToast(`${products.length}개 상품으로 교체했어요 ✓`);
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) writeToFile();
+  renderProductTable();
+}
+
+function parseTSV(text) {
+  const rows = text.trim().split(/\r?\n/).map(r => r.split('\t'));
+  // 헤더 행 자동 감지: 첫 셀이 http로 시작하지 않으면 헤더로 간주해 제외
+  const first = (rows[0]?.[0] || '').trim();
+  const dataRows = first.toLowerCase().startsWith('http') ? rows : rows.slice(1);
+  return dataRows
+    .filter(r => r.some(c => c.trim()))
+    .map((r, i) => ({
+      id: Date.now() + i,
+      naverUrl:    (r[0] || '').trim(),
+      name:        (r[1] || '').trim(),
+      englishName: (r[2] || '').trim(),
+      description: (r[3] || '').trim(),
+      customOrder: false,
+    }));
+}
+
+function processExcelPaste(text, mode) {
+  const products = parseTSV(text);
+  if (!products.length) { showToast('가져올 상품이 없어요'); return; }
+
+  if (mode === 'add') {
+    const newByUrl = new Map(products.filter(p => p.naverUrl).map(p => [p.naverUrl, p]));
+    const kept = appData.products.filter(p => !newByUrl.has(p.naverUrl));
+    appData.products = [...kept, ...products];
+    showToast(`${products.length}개 상품을 추가했어요 ✓`);
+  } else {
+    appData.products = products;
+    showToast(`${products.length}개 상품으로 교체했어요 ✓`);
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  if (fileHandle) writeToFile();
+  renderProductTable();
+}
+
+// ─── Ctrl+V 직접 붙여넣기 (표 위에서 바로 사용 가능) ───
+document.addEventListener('paste', function(e) {
+  const tab = document.getElementById('tab-products');
+  if (!tab || !tab.classList.contains('active')) return; // 상품 탭이 아니면 무시
+
+  const text = (e.clipboardData || window.clipboardData)?.getData('text/plain') || '';
+  if (!text.includes('\t')) return; // 탭 없으면 일반 붙여넣기
+
+  const target = e.target;
+  // 단일 셀 입력 중 단일 라인 붙여넣기는 그냥 진행
+  if (target.tagName === 'INPUT' && !text.includes('\n')) return;
+
+  e.preventDefault();
+
+  const products = parseTSV(text);
+  if (!products.length) { showToast('가져올 상품이 없어요'); return; }
+
+  if (!appData.products.length) {
+    // 기존 상품 없으면 바로 교체
+    processExcelPaste(text, 'replace');
+  } else {
+    // 기존 상품 있으면 모달 없이 확인 팝업
+    const choice = confirm(
+      `엑셀에서 ${products.length}개 상품을 감지했어요.\n\n` +
+      `[확인] 기존 상품 유지하고 추가\n[취소] 기존 상품 삭제하고 교체`
+    );
+    processExcelPaste(text, choice ? 'add' : 'replace');
+  }
+});
+
+// ═══════════════════════════════════════════════════
+//  사이트 내보내기 (Netlify 배포용 data.json)
+// ═══════════════════════════════════════════════════
+async function exportSiteData() {
+  const json = JSON.stringify(appData, null, 2);
+
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: 'data.json',
+        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(json);
+      await writable.close();
+      showToast('data.json 저장됐어요 ✓  mg 폴더에 넣고 Netlify에 올려주세요');
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+    }
+  }
+
+  // 폴백: 다운로드
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'data.json'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('data.json 다운로드됐어요 — mg 폴더에 넣고 Netlify에 올려주세요');
+}
+
+
+function importData() {
+  document.getElementById('importFileInput').click();
+}
+
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      appData = imported;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      fillForms();
+      renderProductTable();
+      showToast('데이터를 가져왔어요 ✓');
+    } catch {
+      showToast('파일을 읽을 수 없어요. JSON 파일인지 확인해 주세요.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ═══════════════════════════════════════════════════
+//  토스트
+// ═══════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>

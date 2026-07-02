@@ -1,0 +1,403 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Variables ── */
+:root {
+  --sidebar-w: 210px;
+  --accent: #6b5ce7;
+  --text: #1a1a1a;
+  --muted: #999;
+  --border: #ebebeb;
+  --bg: #fff;
+  --font: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════
+   SIDEBAR — 데스크탑
+══════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  padding: 40px 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tagline {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+.logo {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 40px;
+}
+
+.sidebar-nav a {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text);
+  transition: color .2s;
+}
+.sidebar-nav a:hover { color: var(--accent); }
+
+/* ══════════════════════════════════════
+   MOBILE HEADER
+══════════════════════════════════════ */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 50px;
+  padding: 0 20px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-between;
+  z-index: 200;
+}
+
+.ham-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+}
+.ham-btn span {
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--text);
+  transition: transform .25s, opacity .25s;
+  transform-origin: center;
+}
+.ham-btn.active span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.ham-btn.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.ham-btn.active span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 50px; left: 0; right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 190;
+  flex-direction: column;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  padding: 15px 20px;
+  font-size: 14px;
+  font-weight: 300;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-nav a:last-child { border-bottom: none; }
+.mobile-nav a:hover { color: var(--accent); }
+
+/* ══════════════════════════════════════
+   MOBILE TAGLINE (모바일 전용 소개문구)
+══════════════════════════════════════ */
+.mobile-tagline {
+  display: none;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: pre-line;
+  line-height: 1.9;
+  font-weight: 300;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ══════════════════════════════════════
+   MAIN
+══════════════════════════════════════ */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 40px 32px 60px;
+}
+
+/* ══════════════════════════════════════
+   PRODUCT GRID — 인스타그램 스타일 정방형
+══════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols-desktop, 3), 1fr);
+  gap: 20px;
+}
+
+/* ══════════════════════════════════════
+   PRODUCT CARD
+══════════════════════════════════════ */
+.card {
+  display: block;
+  cursor: pointer;
+}
+
+/* 정방형 이미지 컨테이너 */
+.card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f4f4f4;
+}
+
+.card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+.card:hover .card-img-wrap img { transform: scale(1.04); }
+
+/* 호버 오버레이 */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  transition: background .3s ease, opacity .3s ease;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+}
+.card:hover .card-overlay {
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 1;
+}
+
+.overlay-name {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.badge {
+  font-size: 10px;
+  background: var(--accent);
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 400;
+}
+
+/* 카드 텍스트 */
+.card-info {
+  padding: 10px 2px 0;
+}
+.card-name {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+.card-size {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.footer {
+  margin-left: var(--sidebar-w);
+  padding: 32px 32px 48px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 2.3;
+  font-weight: 300;
+}
+.footer a { color: var(--accent); }
+.copyright { margin-top: 16px; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+
+/* 태블릿 */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols-mobile, 2), 1fr);
+    gap: 12px;
+  }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  body { display: block; }
+
+  .sidebar { display: none; }
+
+  .mobile-header { display: flex; }
+
+  .main {
+    margin-left: 0;
+    padding: 66px 12px 48px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols-mobile, 2), 1fr);
+    gap: 6px;
+  }
+
+  .mobile-tagline { display: block; }
+
+  .card-info { padding: 6px 1px 0; }
+  .card-name { font-size: 11px; }
+  .card-size { font-size: 10px; }
+
+  /* 모바일에서는 항상 오버레이 표시 */
+  .card-overlay {
+    background: rgba(0, 0, 0, 0.2);
+    opacity: 1;
+  }
+  .overlay-name { font-size: 11px; }
+
+  .footer {
+    margin-left: 0;
+    padding: 28px 16px 48px;
+  }
+}
+
+/* 소형 모바일 */
+@media (max-width: 400px) {
+  .grid { gap: 4px; }
+}
+
+/* ══════════════════════════════════════
+   CURTAIN INTRO EFFECT
+══════════════════════════════════════ */
+.curtain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #2d2d2d;
+  cursor: pointer;
+  user-select: none;
+}
+
+.c-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(50% - 2px);
+  transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.c-left  { left: 0; }
+.c-right { right: 0; }
+
+.c-body {
+  position: absolute;
+  inset: 0;
+  background: #b8dde8;
+}
+
+.c-left .c-body {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 68px), calc(100% - 68px) 100%, 0 100%);
+}
+
+.c-fold-shd {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 74px;
+  height: 74px;
+  background: rgba(0, 0, 0, 0.22);
+  clip-path: polygon(0 0, 0 100%, 100% 0);
+  pointer-events: none;
+}
+
+.c-info {
+  position: absolute;
+  top: 40px;
+  left: 24px;
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.c-info-tagline {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 1.9;
+  white-space: pre-line;
+}
+
+.c-info-brand {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.curtain-hint {
+  position: absolute;
+  bottom: 18px;
+  right: calc(50% + 8px);
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font);
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: c-blink 2.5s ease-in-out infinite;
+}
+
+@keyframes c-blink {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.7; }
+}
+
+.curtain-overlay.open .c-left  { transform: translateX(-110%); }
+.curtain-overlay.open .c-right { transform: translateX(110%); }
+.curtain-overlay.gone { display: none; }
