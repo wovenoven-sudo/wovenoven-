@@ -38,6 +38,15 @@
       <a href="#" target="_blank" rel="noopener" id="sNavNaver">naver store</a>
       <a href="#" target="_blank" rel="noopener" id="sNavInsta">Instagram</a>
     </nav>
+    <div class="sidebar-rolling">
+      <div class="rolling-symbol">
+        <svg viewBox="0 0 48 44" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="0,0 22,0 22,32 10,44 0,44" fill="#C5E4F5"/>
+          <polygon points="10,44 22,44 22,32" fill="rgba(0,0,0,0.22)"/>
+          <rect x="26" y="0" width="22" height="44" fill="#C5E4F5"/>
+        </svg>
+      </div>
+    </div>
   </aside>
 
   <!-- ========== HEADER (모바일) ========== -->
@@ -59,6 +68,17 @@
     <div class="grid" id="productGrid"></div>
   </main>
 
+  <!-- ========== ROLLING SYMBOL (모바일) ========== -->
+  <div class="rolling-wrap">
+    <div class="rolling-symbol">
+      <svg viewBox="0 0 48 44" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="0,0 22,0 22,32 10,44 0,44" fill="#C5E4F5"/>
+        <polygon points="10,44 22,44 22,32" fill="rgba(0,0,0,0.22)"/>
+        <rect x="26" y="0" width="22" height="44" fill="#C5E4F5"/>
+      </svg>
+    </div>
+  </div>
+
   <!-- ========== FOOTER ========== -->
   <footer class="footer" id="siteFooter"></footer>
 
@@ -69,9 +89,17 @@
     (function () {
       const curtain = document.getElementById('curtainOverlay');
       if (!curtain) return;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      curtain.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+      curtain.addEventListener('wheel', e => e.preventDefault(), { passive: false });
       curtain.addEventListener('click', function () {
         this.classList.add('open');
-        setTimeout(() => this.classList.add('gone'), 1050);
+        setTimeout(() => {
+          this.classList.add('gone');
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+        }, 1050);
       });
     })();
 
@@ -184,7 +212,7 @@
         const overlay = document.createElement('div');
         overlay.className = 'card-overlay';
         overlay.innerHTML = `
-          <span class="overlay-name">${p.name}</span>
+          <span class="overlay-name">${p.englishName || p.name}</span>
           ${p.customOrder ? '<span class="badge">주문제작</span>' : ''}
         `;
 

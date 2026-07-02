@@ -2,6 +2,20 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (function () {
+      const PW = 'wovenoven1!';
+      if (sessionStorage.getItem('admin_auth') !== PW) {
+        var input = prompt('비밀번호를 입력하세요:');
+        if (input !== PW) {
+          document.write('<h2 style="font-family:sans-serif;padding:40px">접근이 거부되었습니다.</h2>');
+          document.close();
+          throw new Error('unauthorized');
+        }
+        sessionStorage.setItem('admin_auth', PW);
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 — wovenoven</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
