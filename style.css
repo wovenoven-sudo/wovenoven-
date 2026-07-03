@@ -365,17 +365,78 @@ body {
 }
 
 .co-page-title {
-  font-size: 15px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  letter-spacing: 0.02em;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
 }
 
-.co-page-sub {
-  font-size: 11px;
-  color: var(--muted);
+/* Step bar */
+.co-steps {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.co-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.co-step-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
   font-weight: 300;
-  margin-bottom: 32px;
+  color: var(--border);
+  letter-spacing: 0.18em;
+}
+
+.co-step-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.co-step.active .co-step-num { color: var(--accent); }
+.co-step.active .co-step-name { color: var(--text); font-weight: 400; }
+
+.co-step-sep {
+  width: 24px;
+  height: 1px;
+  background: var(--border);
+  margin-top: 20px;
+  flex-shrink: 0;
+}
+
+/* Section descriptions */
+.co-section { margin-bottom: 20px; }
+
+.co-section-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+
+/* Send hint */
+.co-send-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.8;
 }
 
 .sidebar-nav a.nav-active { color: var(--text); font-weight: 500; }
@@ -506,6 +567,7 @@ body {
 
 @media (max-width: 768px) {
   .co-page { padding: 24px 0; }
+  .co-steps { margin-bottom: 28px; padding-bottom: 20px; }
   .co-options { gap: 8px; }
   .co-size-inputs { flex-direction: column; gap: 10px; }
   .co-toast { white-space: normal; text-align: center; width: 80%; }
