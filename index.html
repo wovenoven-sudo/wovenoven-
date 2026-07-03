@@ -34,7 +34,7 @@
       <a href="/" class="logo" id="sLogoText"></a>
     </div>
     <nav class="sidebar-nav">
-      <a href="#products">product</a>
+      <a href="#" id="sNavProduct" class="nav-active">product</a>
       <a href="#" id="sNavCurtain">커튼 주문제작</a>
       <a href="#" target="_blank" rel="noopener" id="sNavNaver">naver store</a>
       <a href="#" target="_blank" rel="noopener" id="sNavInsta">Instagram</a>
@@ -58,7 +58,7 @@
     </button>
   </header>
   <nav class="mobile-nav" id="mobileNav">
-    <a href="#products">product</a>
+    <a href="#" id="mNavProduct" class="nav-active">product</a>
     <a href="#" id="mNavCurtain">커튼 주문제작</a>
     <a href="#" target="_blank" rel="noopener" id="mNavNaver">naver store</a>
     <a href="#" target="_blank" rel="noopener" id="mNavInsta">Instagram</a>
@@ -67,7 +67,33 @@
   <!-- ========== MAIN ========== -->
   <main class="main" id="products">
     <div class="mobile-tagline" id="mTagline"></div>
-    <div class="grid" id="productGrid"></div>
+    <div id="productView">
+      <div class="grid" id="productGrid"></div>
+    </div>
+    <div id="curtainView" style="display:none">
+      <div class="co-page">
+        <h2 class="co-page-title">커튼 주문제작</h2>
+        <p class="co-page-sub">원하는 옵션과 사이즈를 선택 후 채널로 문의해 주세요</p>
+        <p class="co-step-label">옵션을 선택해 주세요</p>
+        <div class="co-options" id="coOptions"></div>
+        <div class="co-size-wrap" id="coSizeWrap">
+          <p class="co-step-label">사이즈를 입력해 주세요 (cm 기준)</p>
+          <div class="co-size-inputs">
+            <div class="co-input-group">
+              <label for="coWidth">가로</label>
+              <input type="number" id="coWidth" placeholder="0" min="1">
+              <span>cm</span>
+            </div>
+            <div class="co-input-group">
+              <label for="coHeight">세로</label>
+              <input type="number" id="coHeight" placeholder="0" min="1">
+              <span>cm</span>
+            </div>
+          </div>
+          <button class="co-send-btn" id="coSendBtn">우븐오븐 채널로 전송</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- ========== ROLLING SYMBOL (모바일) ========== -->
@@ -84,33 +110,6 @@
   <!-- ========== FOOTER ========== -->
   <footer class="footer" id="siteFooter"></footer>
 
-  <!-- ========== CURTAIN ORDER MODAL ========== -->
-  <div class="co-modal" id="coModal">
-    <div class="co-inner">
-      <button class="co-close" id="coClose" aria-label="닫기">×</button>
-      <h2 class="co-title">커튼 주문제작</h2>
-
-      <p class="co-step-label">옵션을 선택해 주세요</p>
-      <div class="co-options" id="coOptions"></div>
-
-      <div class="co-size-wrap" id="coSizeWrap">
-        <p class="co-step-label">사이즈를 입력해 주세요 (cm 기준)</p>
-        <div class="co-size-inputs">
-          <div class="co-input-group">
-            <label for="coWidth">가로</label>
-            <input type="number" id="coWidth" placeholder="0" min="1">
-            <span>cm</span>
-          </div>
-          <div class="co-input-group">
-            <label for="coHeight">세로</label>
-            <input type="number" id="coHeight" placeholder="0" min="1">
-            <span>cm</span>
-          </div>
-        </div>
-        <button class="co-send-btn" id="coSendBtn">우븐오븐 채널로 전송</button>
-      </div>
-    </div>
-  </div>
   <div class="co-toast" id="coToast">내용이 복사되었어요! 채팅창에 붙여넣기 해주세요 😊</div>
 
   <script>
@@ -330,13 +329,32 @@
     }
 
     // ═══════════════════════════════════════════════
-    //  커튼 주문제작 모달
+    //  섹션 전환 (product ↔ 커튼 주문제작)
+    // ═══════════════════════════════════════════════
+    function showSection(name) {
+      document.getElementById('productView').style.display  = name === 'product' ? '' : 'none';
+      document.getElementById('curtainView').style.display  = name === 'curtain' ? '' : 'none';
+      ['sNavProduct','mNavProduct'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('nav-active', name === 'product');
+      });
+      ['sNavCurtain','mNavCurtain'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('nav-active', name === 'curtain');
+      });
+    }
+
+    ['sNavProduct','mNavProduct'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', e => { e.preventDefault(); showSection('product'); });
+    });
+
+    // ═══════════════════════════════════════════════
+    //  커튼 주문제작 섹션
     // ═══════════════════════════════════════════════
     function initCurtainOrder() {
       const coData    = siteData.curtainOrder || DEFAULTS.curtainOrder;
       const kakaoUrl  = coData.kakaoUrl || 'https://pf.kakao.com/_qTxejX/chat';
-      const modal     = document.getElementById('coModal');
-      const closeBtn  = document.getElementById('coClose');
       const optionsCt = document.getElementById('coOptions');
       const sizeWrap  = document.getElementById('coSizeWrap');
       const sendBtn   = document.getElementById('coSendBtn');
@@ -344,42 +362,30 @@
       let selectedType = '';
       let toastTimer;
 
-      // 옵션 카드 동적 렌더링
       optionsCt.innerHTML = (coData.options || []).map(opt => `
         <div class="co-option" data-type="${opt.type}">
-          <div class="co-option-img">
-            <img src="images/${opt.image}" alt="${opt.type}">
-          </div>
+          ${opt.image ? `<div class="co-option-img"><img src="images/${opt.image}" alt="${opt.type}" onerror="this.parentElement.style.display='none'"></div>` : ''}
           <p class="co-option-name">${opt.type}</p>
         </div>
       `).join('');
 
-      function getOptions() { return document.querySelectorAll('.co-option'); }
-
-      function openModal() {
-        modal.classList.add('open');
-        selectedType = '';
-        getOptions().forEach(o => o.classList.remove('selected'));
-        sizeWrap.classList.remove('visible');
-        document.getElementById('coWidth').value  = '';
-        document.getElementById('coHeight').value = '';
-      }
-
-      function closeModal() { modal.classList.remove('open'); }
-
-      ['sNavCurtain', 'mNavCurtain'].forEach(id => {
+      ['sNavCurtain','mNavCurtain'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.addEventListener('click', e => { e.preventDefault(); openModal(); });
+        if (el) el.addEventListener('click', e => {
+          e.preventDefault();
+          selectedType = '';
+          document.querySelectorAll('.co-option').forEach(o => o.classList.remove('selected'));
+          sizeWrap.classList.remove('visible');
+          if (document.getElementById('coWidth'))  document.getElementById('coWidth').value  = '';
+          if (document.getElementById('coHeight')) document.getElementById('coHeight').value = '';
+          showSection('curtain');
+        });
       });
-
-      closeBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
       optionsCt.addEventListener('click', e => {
         const opt = e.target.closest('.co-option');
         if (!opt) return;
-        getOptions().forEach(o => o.classList.remove('selected'));
+        document.querySelectorAll('.co-option').forEach(o => o.classList.remove('selected'));
         opt.classList.add('selected');
         selectedType = opt.dataset.type;
         sizeWrap.classList.add('visible');
