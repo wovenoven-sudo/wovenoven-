@@ -692,7 +692,7 @@ async function openExistingFile() {
       appData = JSON.parse(text);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       fillForms();
-      renderProductTable();
+      renderProductGrid();
     } catch { showToast('파일 형식이 맞지 않아요.'); return; }
     setFileConnected(handle.name);
     showToast('연결됐어요 ✓ 이제 저장 버튼만 누르면 돼요');
@@ -1090,7 +1090,7 @@ function applyPasteData(mode) {
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
   if (fileHandle) writeToFile();
-  renderProductTable();
+  renderProductGrid();
 }
 
 function parseTSV(text) {
@@ -1126,7 +1126,7 @@ function processExcelPaste(text, mode) {
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
   if (fileHandle) writeToFile();
-  renderProductTable();
+  renderProductGrid();
 }
 
 // ─── Ctrl+V 직접 붙여넣기 (표 위에서 바로 사용 가능) ───
@@ -1205,7 +1205,7 @@ function handleImport(e) {
       appData = imported;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       fillForms();
-      renderProductTable();
+      renderProductGrid();
       showToast('데이터를 가져왔어요 ✓');
     } catch {
       showToast('파일을 읽을 수 없어요. JSON 파일인지 확인해 주세요.');
