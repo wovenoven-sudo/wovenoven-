@@ -643,7 +643,17 @@ try {
 let editingId = null;
 let fileHandle = null; // 연결된 파일 핸들
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  // localStorage 비어있으면 data.json 자동 로드
+  if (!localStorage.getItem(STORAGE_KEY)) {
+    try {
+      const res = await fetch('./data.json');
+      if (res.ok) {
+        appData = await res.json();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      }
+    } catch (e) {}
+  }
   fillForms();
   renderProductGrid();
 
