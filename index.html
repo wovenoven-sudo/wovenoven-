@@ -91,26 +91,7 @@
       <h2 class="co-title">커튼 주문제작</h2>
 
       <p class="co-step-label">옵션을 선택해 주세요</p>
-      <div class="co-options">
-        <div class="co-option" data-type="일반">
-          <div class="co-option-img">
-            <img src="images/curtain-basic.jpg" alt="일반">
-          </div>
-          <p class="co-option-name">일반</p>
-        </div>
-        <div class="co-option" data-type="봉집형">
-          <div class="co-option-img">
-            <img src="images/curtain-bongjip.jpg" alt="봉집형">
-          </div>
-          <p class="co-option-name">봉집형</p>
-        </div>
-        <div class="co-option" data-type="단추형">
-          <div class="co-option-img">
-            <img src="images/curtain-button.jpg" alt="단추형">
-          </div>
-          <p class="co-option-name">단추형</p>
-        </div>
-      </div>
+      <div class="co-options" id="coOptions"></div>
 
       <div class="co-size-wrap" id="coSizeWrap">
         <p class="co-step-label">사이즈를 입력해 주세요 (cm 기준)</p>
@@ -159,6 +140,14 @@
     const STORAGE_KEY = 'wovenoven_data';
 
     const DEFAULTS = {
+      curtainOrder: {
+        kakaoUrl: 'https://pf.kakao.com/_qTxejX/chat',
+        options: [
+          { type: '일반',  image: 'curtain-basic.jpg' },
+          { type: '봉집형', image: 'curtain-bongjip.jpg' },
+          { type: '단추형', image: 'curtain-button.jpg' },
+        ],
+      },
       settings: {
         brandName:     'wovenoven',
         logoText:      'wovenoven.kr',
@@ -344,27 +333,39 @@
     //  커튼 주문제작 모달
     // ═══════════════════════════════════════════════
     function initCurtainOrder() {
+      const coData    = siteData.curtainOrder || DEFAULTS.curtainOrder;
+      const kakaoUrl  = coData.kakaoUrl || 'https://pf.kakao.com/_qTxejX/chat';
       const modal     = document.getElementById('coModal');
       const closeBtn  = document.getElementById('coClose');
-      const options   = document.querySelectorAll('.co-option');
+      const optionsCt = document.getElementById('coOptions');
       const sizeWrap  = document.getElementById('coSizeWrap');
       const sendBtn   = document.getElementById('coSendBtn');
       const toast     = document.getElementById('coToast');
       let selectedType = '';
       let toastTimer;
 
+      // 옵션 카드 동적 렌더링
+      optionsCt.innerHTML = (coData.options || []).map(opt => `
+        <div class="co-option" data-type="${opt.type}">
+          <div class="co-option-img">
+            <img src="images/${opt.image}" alt="${opt.type}">
+          </div>
+          <p class="co-option-name">${opt.type}</p>
+        </div>
+      `).join('');
+
+      function getOptions() { return document.querySelectorAll('.co-option'); }
+
       function openModal() {
         modal.classList.add('open');
         selectedType = '';
-        options.forEach(o => o.classList.remove('selected'));
+        getOptions().forEach(o => o.classList.remove('selected'));
         sizeWrap.classList.remove('visible');
         document.getElementById('coWidth').value  = '';
         document.getElementById('coHeight').value = '';
       }
 
-      function closeModal() {
-        modal.classList.remove('open');
-      }
+      function closeModal() { modal.classList.remove('open'); }
 
       ['sNavCurtain', 'mNavCurtain'].forEach(id => {
         const el = document.getElementById(id);
@@ -375,50 +376,40 @@
       modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-      options.forEach(opt => {
-        opt.addEventListener('click', () => {
-          options.forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          selectedType = opt.dataset.type;
-          sizeWrap.classList.add('visible');
-          document.getElementById('coWidth').value  = '';
-          document.getElementById('coHeight').value = '';
-          document.getElementById('coWidth').focus();
-        });
+      optionsCt.addEventListener('click', e => {
+        const opt = e.target.closest('.co-option');
+        if (!opt) return;
+        getOptions().forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        selectedType = opt.dataset.type;
+        sizeWrap.classList.add('visible');
+        document.getElementById('coWidth').value  = '';
+        document.getElementById('coHeight').value = '';
+        document.getElementById('coWidth').focus();
       });
 
       sendBtn.addEventListener('click', () => {
         const w = document.getElementById('coWidth').value.trim();
         const h = document.getElementById('coHeight').value.trim();
-        if (!w || !h) {
-          alert('가로, 세로 사이즈를 모두 입력해 주세요.');
-          return;
-        }
+        if (!w || !h) { alert('가로, 세로 사이즈를 모두 입력해 주세요.'); return; }
         const msg = `[우븐오븐 커튼 주문제작 문의]\n옵션: ${selectedType}\n사이즈: 가로 ${w}cm × 세로 ${h}cm`;
 
         const showToastAndOpen = () => {
           toast.classList.add('show');
           clearTimeout(toastTimer);
           toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
-          window.open('https://pf.kakao.com/_qTxejX/chat', '_blank');
+          window.open(kakaoUrl, '_blank');
         };
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(msg).then(showToastAndOpen).catch(() => {
-            fallbackCopy(msg); showToastAndOpen();
-          });
-        } else {
-          fallbackCopy(msg); showToastAndOpen();
-        }
+          navigator.clipboard.writeText(msg).then(showToastAndOpen).catch(() => { fallbackCopy(msg); showToastAndOpen(); });
+        } else { fallbackCopy(msg); showToastAndOpen(); }
       });
 
       function fallbackCopy(text) {
         const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity  = '0';
-        document.body.appendChild(ta);
-        ta.focus(); ta.select();
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
         try { document.execCommand('copy'); } catch(e) {}
         document.body.removeChild(ta);
       }
