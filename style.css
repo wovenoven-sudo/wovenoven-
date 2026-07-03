@@ -499,11 +499,17 @@ body {
 }
 
 .co-size-wrap {
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
   border-top: 1px solid var(--border);
+}
+.co-size-wrap.visible {
+  max-height: 400px;
+  opacity: 1;
   padding-top: 24px;
 }
-.co-size-wrap.visible { display: block; }
 
 .co-size-inputs {
   display: flex;
