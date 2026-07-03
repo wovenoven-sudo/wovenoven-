@@ -389,6 +389,17 @@ body {
   gap: 7px;
 }
 
+.co-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background .25s;
+  flex-shrink: 0;
+}
+
+.co-step.active .co-step-dot { background: #C5E4F5; }
+
 .co-step-num {
   font-family: 'Inter', sans-serif;
   font-size: 9px;
@@ -405,14 +416,14 @@ body {
   letter-spacing: 0.01em;
 }
 
-.co-step.active .co-step-num { color: var(--accent); }
+.co-step.active .co-step-num { color: #C5E4F5; }
 .co-step.active .co-step-name { color: var(--text); font-weight: 400; }
 
 .co-step-sep {
   width: 24px;
   height: 1px;
   background: var(--border);
-  margin-top: 20px;
+  margin-top: 5px;
   flex-shrink: 0;
 }
 
