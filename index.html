@@ -34,8 +34,8 @@
       <a href="/" class="logo" id="sLogoText"></a>
     </div>
     <nav class="sidebar-nav">
-      <a href="#" id="sNavProduct" class="nav-active">product</a>
-      <a href="#" id="sNavCurtain">커튼 주문제작</a>
+      <a href="#product" id="sNavProduct" class="nav-active">product</a>
+      <a href="#custom" id="sNavCurtain">커튼 주문제작</a>
       <a href="#" target="_blank" rel="noopener" id="sNavNaver">naver store</a>
       <a href="#" target="_blank" rel="noopener" id="sNavInsta">Instagram</a>
     </nav>
@@ -58,8 +58,8 @@
     </button>
   </header>
   <nav class="mobile-nav" id="mobileNav">
-    <a href="#" id="mNavProduct" class="nav-active">product</a>
-    <a href="#" id="mNavCurtain">커튼 주문제작</a>
+    <a href="#product" id="mNavProduct" class="nav-active">product</a>
+    <a href="#custom" id="mNavCurtain">커튼 주문제작</a>
     <a href="#" target="_blank" rel="noopener" id="mNavNaver">naver store</a>
     <a href="#" target="_blank" rel="noopener" id="mNavInsta">Instagram</a>
   </nav>
@@ -329,8 +329,12 @@
     }
 
     // ═══════════════════════════════════════════════
-    //  섹션 전환 (product ↔ 커튼 주문제작)
+    //  Hash 기반 라우팅
     // ═══════════════════════════════════════════════
+    function getSection() {
+      return window.location.hash === '#custom' ? 'curtain' : 'product';
+    }
+
     function showSection(name) {
       document.getElementById('productView').style.display  = name === 'product' ? '' : 'none';
       document.getElementById('curtainView').style.display  = name === 'curtain' ? '' : 'none';
@@ -344,10 +348,7 @@
       });
     }
 
-    ['sNavProduct','mNavProduct'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('click', e => { e.preventDefault(); showSection('product'); });
-    });
+    window.addEventListener('hashchange', () => showSection(getSection()));
 
     // ═══════════════════════════════════════════════
     //  커튼 주문제작 섹션
@@ -371,14 +372,12 @@
 
       ['sNavCurtain','mNavCurtain'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.addEventListener('click', e => {
-          e.preventDefault();
+        if (el) el.addEventListener('click', () => {
           selectedType = '';
           document.querySelectorAll('.co-option').forEach(o => o.classList.remove('selected'));
           sizeWrap.classList.remove('visible');
           if (document.getElementById('coWidth'))  document.getElementById('coWidth').value  = '';
           if (document.getElementById('coHeight')) document.getElementById('coHeight').value = '';
-          showSection('curtain');
         });
       });
 
@@ -421,6 +420,7 @@
       }
     }
     initCurtainOrder();
+    showSection(getSection());
   </script>
 </body>
 </html>
