@@ -348,6 +348,10 @@ body {
   display: block;
 }
 
+.bounce-shape:last-child {
+  margin-left: 8px;
+}
+
 @keyframes bounce-up {
   0%, 100% { transform: translateY(0); }
   45%       { transform: translateY(-14px); }
