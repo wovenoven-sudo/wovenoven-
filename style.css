@@ -67,7 +67,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 8px;
 }
 
 .logo {
@@ -330,19 +330,21 @@ body {
 /* ══════════════════════════════════════
    ROLLING SYMBOL
 ══════════════════════════════════════ */
-.rolling-symbol {
-  display: inline-flex;
-  animation: roll360 4s linear infinite;
-  transform-origin: 50% 50%;
+.bounce-shapes {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
 }
 
-.rolling-symbol svg {
+.bounce-shape {
+  animation: bounce-up 0.8s ease-in-out infinite;
   display: block;
 }
 
-@keyframes roll360 {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+@keyframes bounce-up {
+  0%, 100% { transform: translateY(0); }
+  45%       { transform: translateY(-14px); }
+  60%       { transform: translateY(-10px); }
 }
 
 /* 데스크탑: 사이드바 하단 */
@@ -352,10 +354,6 @@ body {
   padding-bottom: 40px;
 }
 
-.sidebar-rolling .rolling-symbol img {
-  width: 36px;
-  height: auto;
-}
 
 /* 모바일 standalone: 데스크탑에서 숨김 */
 .rolling-wrap {
@@ -369,10 +367,6 @@ body {
     padding: 48px 0;
   }
 
-  .rolling-wrap .rolling-symbol img {
-    width: 44px;
-    height: auto;
-  }
 }
 
 /* ══════════════════════════════════════
