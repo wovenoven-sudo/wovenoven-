@@ -51,6 +51,23 @@ body {
   font-weight: 300;
 }
 
+.brand-logo {
+  width: 80px;
+  height: auto;
+  display: block;
+}
+
+.brand-logo-mobile {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+}
+
 .logo {
   font-size: 13px;
   font-weight: 500;
@@ -333,7 +350,7 @@ body {
   padding-bottom: 40px;
 }
 
-.sidebar-rolling .rolling-symbol svg {
+.sidebar-rolling .rolling-symbol img {
   width: 36px;
   height: auto;
 }
@@ -350,7 +367,7 @@ body {
     padding: 48px 0;
   }
 
-  .rolling-wrap .rolling-symbol svg {
+  .rolling-wrap .rolling-symbol img {
     width: 44px;
     height: auto;
   }
@@ -398,7 +415,7 @@ body {
   flex-shrink: 0;
 }
 
-.co-step.active .co-step-dot { background: #C5E4F5; }
+.co-step.active .co-step-dot { background: #074FB7; }
 
 .co-step-num {
   font-family: 'Inter', sans-serif;
@@ -416,7 +433,7 @@ body {
   letter-spacing: 0.01em;
 }
 
-.co-step.active .co-step-num { color: #C5E4F5; }
+.co-step.active .co-step-num { color: #074FB7; }
 .co-step.active .co-step-name { color: var(--text); font-weight: 400; }
 
 .co-step-sep {
@@ -621,7 +638,7 @@ body {
 .c-body {
   position: absolute;
   inset: 0;
-  background: #C5E4F5;
+  background: #074FB7;
 }
 
 .c-left .c-body {
