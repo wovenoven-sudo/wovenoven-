@@ -333,7 +333,7 @@ body {
 .bounce-shapes {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 3px;
 }
 
 .bounce-shape {
