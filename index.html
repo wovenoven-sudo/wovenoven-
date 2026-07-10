@@ -3,7 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wovenoven</title>
+  <title>우븐오븐 wovenoven | 수제 패브릭 소품 공식몰</title>
+  <meta name="description" content="우븐오븐 공식 쇼핑몰. 커튼·파우치·코스터·앞치마 등 직접 만든 패브릭 소품을 판매합니다. 커튼 주문제작도 가능해요." />
+  <link rel="canonical" href="https://wovenoven.kr/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://wovenoven.kr/" />
+  <meta property="og:title" content="우븐오븐 wovenoven | 수제 패브릭 소품 공식몰" />
+  <meta property="og:description" content="우븐오븐 공식 쇼핑몰. 커튼·파우치·코스터·앞치마 등 직접 만든 패브릭 소품을 판매합니다. 커튼 주문제작도 가능해요." />
+  <meta property="og:site_name" content="우븐오븐 wovenoven" />
+  <meta name="robots" content="index, follow" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "OnlineStore",
+    "name": "우븐오븐 wovenoven",
+    "url": "https://wovenoven.kr/",
+    "description": "직접 만든 패브릭 소품 쇼핑몰. 커튼, 파우치, 코스터, 앞치마 등.",
+    "email": "wovenoven@gmail.com",
+    "telephone": "+82-10-3059-2348",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "안산시",
+      "addressRegion": "경기도",
+      "addressCountry": "KR"
+    },
+    "sameAs": [
+      "https://smartstore.naver.com/wovenoven"
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -234,7 +262,7 @@
     // ═══════════════════════════════════════════════
     function applySettings() {
       const s = siteData.settings;
-      document.title = s.brandName || 'wovenoven';
+      document.title = (s.brandName || 'wovenoven') + ' | 수제 패브릭 소품 공식몰';
 
       const taglineEl = document.getElementById('sTagline');
       taglineEl.style.whiteSpace = 'pre-line';
