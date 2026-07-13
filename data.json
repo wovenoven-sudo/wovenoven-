@@ -14,10 +14,34 @@
     "ceo": "엄소영",
     "phone": "010-3059-2348",
     "email": "wovenoven@gmail.com",
-    "address": "경기도 안산시 오복로4길 8, 2층",
+    "address": "경기도 안산시 오목로4길 8, 2층",
     "businessNumber": "661-19-02348"
   },
   "products": [
+    {
+      "id": 1783918366683,
+      "name": "가림막 커튼",
+      "englishName": "Half Curtain(navy check)",
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13660953561",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1783918312791,
+      "name": "가림막 커튼",
+      "englishName": "Half Curtain(white stripe)",
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13660766612",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502844,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194348",
+      "name": "소리 코스터",
+      "englishName": "Sori Coaster",
+      "description": "",
+      "customOrder": false
+    },
     {
       "id": 1783411682046,
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13655700053",
@@ -31,14 +55,6 @@
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13655706230",
       "name": "린넨 테이블매트 블루체크",
       "englishName": "Linen Table Mat (blue check)",
-      "description": "",
-      "customOrder": false
-    },
-    {
-      "id": 1782968502844,
-      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194348",
-      "name": "소리 코스터",
-      "englishName": "Sori Coaster",
       "description": "",
       "customOrder": false
     },
