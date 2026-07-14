@@ -20,7 +20,7 @@
   "products": [
     {
       "id": 1783918366683,
-      "name": "가림막 커튼",
+      "name": "가림막 커튼 네이비체크",
       "englishName": "Half Curtain(navy check)",
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13660953561",
       "description": "",
@@ -28,17 +28,9 @@
     },
     {
       "id": 1783918312791,
-      "name": "가림막 커튼",
+      "name": "가림막 커튼 스트라이프",
       "englishName": "Half Curtain(white stripe)",
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13660766612",
-      "description": "",
-      "customOrder": false
-    },
-    {
-      "id": 1782968502844,
-      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194348",
-      "name": "소리 코스터",
-      "englishName": "Sori Coaster",
       "description": "",
       "customOrder": false
     },
@@ -51,10 +43,34 @@
       "customOrder": false
     },
     {
+      "id": 1784011456723,
+      "name": "하트 어닝 커튼 스카이블루",
+      "englishName": "Herat Curtain(sky blue)",
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13662972650",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1784011391387,
+      "name": "하트 어닝 커튼 피치핑크",
+      "englishName": "Herat Curtain(peach pink)",
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13662972650",
+      "description": "",
+      "customOrder": false
+    },
+    {
       "id": 1783411682047,
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13655706230",
       "name": "린넨 테이블매트 블루체크",
       "englishName": "Linen Table Mat (blue check)",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1782968502835,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13633777672",
+      "name": "빅파우치 도트",
+      "englishName": "Big Pouch (dot)",
       "description": "",
       "customOrder": false
     },
@@ -67,10 +83,10 @@
       "customOrder": false
     },
     {
-      "id": 1782968502835,
-      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13633777672",
-      "name": "빅파우치 도트",
-      "englishName": "Big Pouch (dot)",
+      "id": 1782968502844,
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194348",
+      "name": "소리 코스터",
+      "englishName": "Sori Coaster",
       "description": "",
       "customOrder": false
     },
