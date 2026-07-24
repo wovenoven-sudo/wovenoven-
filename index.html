@@ -245,15 +245,13 @@
     let siteData = JSON.parse(JSON.stringify(DEFAULTS));
 
     async function init() {
-      // 우선순위: localStorage(어드민 로컬) → data.json(배포 서버) → DEFAULTS
       try {
+        const res = await fetch('./data.json');
+        if (res.ok) siteData = await res.json();
+      } catch (e) {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) { siteData = JSON.parse(stored); }
-        else {
-          const res = await fetch('./data.json');
-          if (res.ok) siteData = await res.json();
-        }
-      } catch (e) {}
+        if (stored) siteData = JSON.parse(stored);
+      }
       applySettings();
       renderProducts();
       renderFooter();
