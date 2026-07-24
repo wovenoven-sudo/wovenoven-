@@ -187,14 +187,6 @@
       "customOrder": false
     },
     {
-      "id": 1782968502850,
-      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488194349",
-      "name": "선물 세트",
-      "englishName": "Gift SET",
-      "description": "",
-      "customOrder": false
-    },
-    {
       "id": 1782968502839,
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13622439083",
       "name": "레이스 커튼",
@@ -220,7 +212,7 @@
     },
     {
       "id": 1784862136699,
-      "name": "체크커튼",
+      "name": "체크 커튼",
       "englishName": "Check Curtain.",
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488179250",
       "description": "",
@@ -255,14 +247,6 @@
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13488179247",
       "name": "피크닉 파우치 블루체크",
       "englishName": "Picnic Pouch (blue check)",
-      "description": "",
-      "customOrder": false
-    },
-    {
-      "id": 1784620452619,
-      "name": "",
-      "englishName": "",
-      "naverUrl": "",
       "description": "",
       "customOrder": false
     }
