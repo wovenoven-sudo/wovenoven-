@@ -213,6 +213,20 @@ body {
 }
 .card:hover .card-img-wrap img { transform: scale(1.04); }
 
+/* 멀티이미지 카드 */
+.has-multi-img .card-img-wrap { overflow: hidden; }
+.has-multi-img .img-primary {
+  transition: opacity .4s ease, transform .5s ease;
+}
+.has-multi-img .img-secondary {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s ease, transform .5s ease;
+}
+.has-multi-img:hover .img-primary { opacity: 0; }
+.has-multi-img:hover .img-secondary { opacity: 1; }
+
 /* 호버 오버레이 */
 .card-overlay {
   position: absolute;

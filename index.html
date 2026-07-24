@@ -12,6 +12,9 @@
   <meta property="og:title" content="우븐오븐 wovenoven | 살림에 필요한 것을 만들어요 𐃬𖥣" />
   <meta property="og:description" content="우븐오븐 공식 쇼핑몰. 커튼·파우치·코스터·앞치마 등 직접 만든 패브릭 소품을 판매합니다. 커튼 주문제작도 가능해요." />
   <meta property="og:site_name" content="우븐오븐 wovenoven" />
+  <meta property="og:image" content="https://wovenoven.kr/images/Fori%20Curtain.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="1200" />
   <meta name="robots" content="index, follow" />
   <script type="application/ld+json">
   {
@@ -308,13 +311,27 @@
         const imgWrap = document.createElement('div');
         imgWrap.className = 'card-img-wrap';
 
-        const img = document.createElement('img');
-        img.alt = p.name;
-        img.loading = 'lazy';
-        img.dataset.name = p.englishName || '';
-        img.dataset.extIdx = '0';
-        img.src = `images/${p.englishName || '__none__'}.jpg`;
-        img.onerror = function() { tryNextProductImg(this); };
+        if (p.images && p.images.length > 1) {
+          card.classList.add('has-multi-img');
+          p.images.forEach((filename, i) => {
+            const img = document.createElement('img');
+            img.alt = p.name;
+            img.loading = 'lazy';
+            img.className = i === 0 ? 'img-primary' : 'img-secondary';
+            img.src = `images/${filename}`;
+            img.onerror = function() { this.style.display = 'none'; };
+            imgWrap.appendChild(img);
+          });
+        } else {
+          const img = document.createElement('img');
+          img.alt = p.name;
+          img.loading = 'lazy';
+          img.dataset.name = p.englishName || '';
+          img.dataset.extIdx = '0';
+          img.src = `images/${p.englishName || '__none__'}.jpg`;
+          img.onerror = function() { tryNextProductImg(this); };
+          imgWrap.appendChild(img);
+        }
 
         const overlay = document.createElement('div');
         overlay.className = 'card-overlay';
@@ -323,7 +340,6 @@
           ${p.customOrder ? '<span class="badge">주문제작</span>' : ''}
         `;
 
-        imgWrap.appendChild(img);
         imgWrap.appendChild(overlay);
 
         const info = document.createElement('div');
