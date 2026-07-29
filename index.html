@@ -294,63 +294,81 @@
     // ═══════════════════════════════════════════════
     //  상품 그리드 렌더링
     // ═══════════════════════════════════════════════
+    function buildCard(p, overrideImgSrc) {
+      const card = document.createElement('a');
+      card.href   = p.naverUrl || '#';
+      card.target = '_blank';
+      card.rel    = 'noopener noreferrer';
+      card.className = 'card';
+      card.setAttribute('aria-label', p.name + ' — 네이버 스토어로 이동');
+
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'card-img-wrap';
+
+      if (!overrideImgSrc && p.images && p.images.length > 1) {
+        card.classList.add('has-multi-img');
+        p.images.forEach((filename, i) => {
+          const img = document.createElement('img');
+          img.alt = p.name;
+          img.loading = 'lazy';
+          img.className = i === 0 ? 'img-primary' : 'img-secondary';
+          img.src = `images/${filename}`;
+          img.onerror = function() { this.style.display = 'none'; };
+          imgWrap.appendChild(img);
+        });
+      } else {
+        const img = document.createElement('img');
+        img.alt = p.name;
+        img.loading = 'lazy';
+        img.dataset.name = p.englishName || '';
+        img.dataset.extIdx = '0';
+        img.src = overrideImgSrc || `images/${p.englishName || '__none__'}.jpg`;
+        img.onerror = overrideImgSrc ? function() { this.style.display = 'none'; } : function() { tryNextProductImg(this); };
+        imgWrap.appendChild(img);
+      }
+
+      const overlay = document.createElement('div');
+      overlay.className = 'card-overlay';
+      overlay.innerHTML = `
+        <span class="overlay-name">${p.englishName ? p.englishName.replace(/\.$/, '') : p.name}</span>
+        ${p.customOrder ? '<span class="badge">주문제작</span>' : ''}
+      `;
+
+      imgWrap.appendChild(overlay);
+
+      const info = document.createElement('div');
+      info.className = 'card-info';
+      info.innerHTML = `
+        <p class="card-name">${p.name}</p>
+        ${p.description ? `<p class="card-size">${p.description}</p>` : ''}
+      `;
+
+      card.appendChild(imgWrap);
+      card.appendChild(info);
+      return card;
+    }
+
     function renderProducts() {
       const grid = document.getElementById('productGrid');
       grid.innerHTML = '';
 
-      siteData.products.forEach(p => {
-        const card = document.createElement('a');
-        card.href   = p.naverUrl || '#';
-        card.target = '_blank';
-        card.rel    = 'noopener noreferrer';
-        card.className = 'card';
-        card.setAttribute('aria-label', p.name + ' — 네이버 스토어로 이동');
+      // englishName이 "."으로 끝나는 항목은 자동 복제로 처리되므로 건너뜀
+      siteData.products
+        .filter(p => !(p.englishName && p.englishName.endsWith('.')))
+        .forEach(p => {
+          const card = buildCard(p, null);
+          grid.appendChild(card);
 
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'card-img-wrap';
-
-        if (p.images && p.images.length > 1) {
-          card.classList.add('has-multi-img');
-          p.images.forEach((filename, i) => {
-            const img = document.createElement('img');
-            img.alt = p.name;
-            img.loading = 'lazy';
-            img.className = i === 0 ? 'img-primary' : 'img-secondary';
-            img.src = `images/${filename}`;
-            img.onerror = function() { this.style.display = 'none'; };
-            imgWrap.appendChild(img);
-          });
-        } else {
-          const img = document.createElement('img');
-          img.alt = p.name;
-          img.loading = 'lazy';
-          img.dataset.name = p.englishName || '';
-          img.dataset.extIdx = '0';
-          img.src = `images/${p.englishName || '__none__'}.jpg`;
-          img.onerror = function() { tryNextProductImg(this); };
-          imgWrap.appendChild(img);
-        }
-
-        const overlay = document.createElement('div');
-        overlay.className = 'card-overlay';
-        overlay.innerHTML = `
-          <span class="overlay-name">${p.englishName || p.name}</span>
-          ${p.customOrder ? '<span class="badge">주문제작</span>' : ''}
-        `;
-
-        imgWrap.appendChild(overlay);
-
-        const info = document.createElement('div');
-        info.className = 'card-info';
-        info.innerHTML = `
-          <p class="card-name">${p.name}</p>
-          ${p.description ? `<p class="card-size">${p.description}</p>` : ''}
-        `;
-
-        card.appendChild(imgWrap);
-        card.appendChild(info);
-        grid.appendChild(card);
-      });
+          // {englishName}..jpg 이미지가 존재하면 동일 상품 카드를 바로 옆에 자동 삽입
+          if (p.englishName) {
+            const dupSrc = `images/${p.englishName}..jpg`;
+            const probe = new Image();
+            probe.onload = function() {
+              card.insertAdjacentElement('afterend', buildCard(p, dupSrc));
+            };
+            probe.src = dupSrc;
+          }
+        });
     }
 
     function tryNextProductImg(img) {
