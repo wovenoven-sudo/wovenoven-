@@ -923,33 +923,6 @@ function renderProductGrid() {
 
       grid.appendChild(card);
 
-      // ..jpg 이미지가 있으면 자동복제 카드 삽입
-      if (p.englishName) {
-        const dupSrc = `images/${p.englishName}..jpg`;
-        const probe = new Image();
-        probe.onload = function() {
-          const dupCard = document.createElement('div');
-          dupCard.className = 'admin-card';
-
-          const dupImgWrap = document.createElement('div');
-          dupImgWrap.className = 'admin-card-img-wrap';
-          const dupImg = document.createElement('img');
-          dupImg.src = dupSrc;
-          dupImg.onerror = function() { this.style.display = 'none'; };
-          dupImgWrap.appendChild(dupImg);
-          dupImgWrap.innerHTML += '<div class="admin-card-auto-badge">자동복제</div>';
-          dupCard.appendChild(dupImgWrap);
-
-          dupCard.innerHTML += `
-            <div class="admin-card-info">
-              <p class="admin-card-name">${p.name || ''}</p>
-              <p class="admin-card-sub">${p.englishName}. (자동)</p>
-            </div>`;
-
-          card.insertAdjacentElement('afterend', dupCard);
-        };
-        probe.src = dupSrc;
-      }
     });
 
   setupDragDrop();
