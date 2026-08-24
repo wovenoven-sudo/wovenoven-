@@ -352,22 +352,9 @@
       const grid = document.getElementById('productGrid');
       grid.innerHTML = '';
 
-      // englishName이 "."으로 끝나는 항목은 자동 복제로 처리되므로 건너뜀
-      siteData.products
-        .filter(p => !(p.englishName && p.englishName.endsWith('.')))
-        .forEach(p => {
+      siteData.products.forEach(p => {
           const card = buildCard(p, null);
           grid.appendChild(card);
-
-          // {englishName}..jpg 이미지가 존재하면 동일 상품 카드를 바로 옆에 자동 삽입
-          if (p.englishName) {
-            const dupSrc = `images/${p.englishName}..jpg`;
-            const probe = new Image();
-            probe.onload = function() {
-              card.insertAdjacentElement('afterend', buildCard(p, dupSrc));
-            };
-            probe.src = dupSrc;
-          }
         });
     }
 
