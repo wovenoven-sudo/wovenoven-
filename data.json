@@ -2,7 +2,7 @@
   "settings": {
     "brandName": "wovenoven",
     "logoText": "wovenoven.kr",
-    "tagline": "불필요한 봉제선 없이,\n살림에 필요한 것만 만들어요",
+    "tagline": "불필요한 봉제선 없이,\n살림에 필요한 것들을 만들어요",
     "naverStoreUrl": "https://smartstore.naver.com/wovenoven",
     "instagramUrl": "https://instagram.com/wovenoven.kr",
     "gridColsDesktop": 3,
@@ -27,6 +27,14 @@
       "customOrder": false
     },
     {
+      "id": 1787538655139,
+      "name": "가림막 커튼 화이트체크",
+      "englishName": "Half Curtain(white check)",
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13729764024",
+      "description": "",
+      "customOrder": false
+    },
+    {
       "id": 1783918312791,
       "name": "가림막 커튼 스트라이프",
       "englishName": "Half Curtain(white stripe)",
@@ -43,17 +51,25 @@
       "customOrder": false
     },
     {
-      "id": 1786325681097,
-      "name": "가림막 커튼 무지",
-      "englishName": "Half Curtain.(Plain)",
-      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13637751658",
-      "description": "",
+      "id": 1787539057825,
+      "name": "가림막 커튼 화이트체크",
+      "englishName": "Half Curtain(white check)",
+      "naverUrl": "Half Curtain(white check)",
+      "description": "https://smartstore.naver.com/wovenoven/products/13729764024",
       "customOrder": false
     },
     {
       "id": 1786325651905,
       "name": "가림막 커튼 무지",
       "englishName": "Half Curtain(Plain)",
+      "naverUrl": "https://smartstore.naver.com/wovenoven/products/13637751658",
+      "description": "",
+      "customOrder": false
+    },
+    {
+      "id": 1786325681097,
+      "name": "가림막 커튼 무지",
+      "englishName": "Half Curtain.(Plain)",
       "naverUrl": "https://smartstore.naver.com/wovenoven/products/13637751658",
       "description": "",
       "customOrder": false
